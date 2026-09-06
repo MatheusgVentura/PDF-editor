@@ -1,6 +1,13 @@
 import { editorState } from '../core/state.js';
 import { screenBoxFromPdf, pdfBoxFromScreen } from '../core/coords.js';
-import { updateOverlay, removeOverlay } from './overlay-model.js';
+import {
+  updateOverlay,
+  removeOverlay,
+  copyOverlayToClipboard,
+  hasClipboardOverlay,
+  pasteOverlayFromClipboard,
+  duplicateOverlay
+} from './overlay-model.js';
 import { icons } from '../ui/icons.js';
 
 const layer = document.getElementById('overlay-layer');
@@ -71,7 +78,10 @@ function buildElement(overlay, viewport) {
   renderContent(el, overlay, viewport);
 
   if (overlay.id === selectedId) {
-    if (overlay.type !== 'text') addDeleteButton(el, overlay);
+    if (overlay.type !== 'text') {
+      addDeleteButton(el, overlay);
+      addDuplicateButton(el, overlay);
+    }
     addResizeHandle(el, overlay, viewport);
   }
 
@@ -196,9 +206,18 @@ export function editSelectedText() {
 }
 
 function addSelectionControls(el, overlay, viewport) {
-  if (overlay.type === 'text') addTextToolbar(overlay, viewport);
-  else addDeleteButton(el, overlay);
+  if (overlay.type === 'text') {
+    addTextToolbar(overlay, viewport);
+  } else {
+    addDeleteButton(el, overlay);
+    addDuplicateButton(el, overlay);
+  }
   addResizeHandle(el, overlay, viewport);
+}
+
+function duplicateSelected(pageIndex, id) {
+  const copy = duplicateOverlay(pageIndex, id);
+  if (copy) selectOverlay(copy.id);
 }
 
 function positionTextToolbar(box) {
@@ -219,6 +238,7 @@ function addTextToolbar(overlay, viewport) {
     <input class="text-color-control" type="color" aria-label="Cor do texto" title="Cor do texto" />
     <span class="text-toolbar-divider" aria-hidden="true"></span>
     <button type="button" class="text-edit-button" title="Editar texto">Editar</button>
+    <button type="button" class="icon-btn" aria-label="Duplicar texto" title="Duplicar (Ctrl+D)">${icons.duplicate}</button>
     <button type="button" class="icon-btn danger" aria-label="Excluir texto" title="Excluir texto">${icons.trash}</button>
   `;
   const size = toolbar.querySelector('input[type="number"]');
@@ -242,6 +262,9 @@ function addTextToolbar(overlay, viewport) {
     });
   });
   toolbar.querySelector('.text-edit-button').addEventListener('click', editSelectedText);
+  toolbar.querySelector('[aria-label="Duplicar texto"]').addEventListener('click', () => {
+    duplicateSelected(editorState.activePageIndex, overlay.id);
+  });
   toolbar.querySelector('.danger').addEventListener('click', () => {
     selectedId = null;
     removeOverlay(editorState.activePageIndex, overlay.id);
@@ -261,6 +284,21 @@ function addDeleteButton(el, overlay) {
     e.stopPropagation();
     if (selectedId === overlay.id) selectedId = null;
     removeOverlay(editorState.activePageIndex, overlay.id);
+  });
+  el.appendChild(btn);
+}
+
+function addDuplicateButton(el, overlay) {
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.setAttribute('aria-label', 'Duplicar elemento');
+  btn.title = 'Duplicar (Ctrl+D)';
+  btn.className = 'overlay-duplicate';
+  btn.innerHTML = icons.duplicate;
+  btn.addEventListener('pointerdown', (e) => e.stopPropagation());
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    duplicateSelected(editorState.activePageIndex, overlay.id);
   });
   el.appendChild(btn);
 }
@@ -337,6 +375,30 @@ function startDrag(e, overlay, viewport, el) {
 layer.addEventListener('pointerdown', (e) => {
   if (e.target === layer) {
     selectOverlay(null);
+  }
+});
+
+// Copiar/colar/duplicar entre paginas. So atua fora de campos editaveis
+// (input da barra, texto em edicao) para nao atropelar o clipboard nativo.
+document.addEventListener('keydown', (e) => {
+  if (editorState.mode !== 'content') return;
+  if (!(e.ctrlKey || e.metaKey)) return;
+  if (e.target.closest?.('input, textarea, [contenteditable="plaintext-only"]')) return;
+
+  const key = e.key.toLowerCase();
+  if (key === 'c' && selectedId) {
+    const overlay = editorState.getActiveOverlays().find((o) => o.id === selectedId);
+    if (overlay) {
+      e.preventDefault();
+      copyOverlayToClipboard(overlay);
+    }
+  } else if (key === 'v' && hasClipboardOverlay()) {
+    e.preventDefault();
+    const pasted = pasteOverlayFromClipboard(editorState.activePageIndex);
+    if (pasted) selectOverlay(pasted.id);
+  } else if (key === 'd' && selectedId) {
+    e.preventDefault();
+    duplicateSelected(editorState.activePageIndex, selectedId);
   }
 });
 

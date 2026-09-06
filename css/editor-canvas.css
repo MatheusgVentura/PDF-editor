@@ -246,6 +246,23 @@
   cursor: pointer;
 }
 
+.overlay-duplicate {
+  position: absolute;
+  top: -11px;
+  left: -11px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--navy);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid #fff;
+  cursor: pointer;
+}
+.overlay-duplicate .icon { width: 12px; height: 12px; }
+
 /* Signature pad modal */
 .signature-pad-wrap {
   border: 1px solid var(--border-strong);

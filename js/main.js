@@ -150,6 +150,10 @@ function renderContentPanel(container) {
         Ctrl+Enter conclui a digitação; Esc cancela a edição atual.
         O conteúdo é adicionado sobre o PDF, sem alterar o texto original.
       </p>
+      <p class="panel-note">
+        Com um elemento selecionado: Ctrl+D duplica na mesma página,
+        Ctrl+C copia e Ctrl+V cola — inclusive em outra página do documento.
+      </p>
     </div>
   `;
 

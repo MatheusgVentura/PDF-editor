@@ -155,11 +155,46 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow-y: auto;
+  /* Padding inferior maior que o superior desloca o conteudo pra cima do
+     centro geometrico — centralizado "de verdade" ele parece pesado
+     demais na metade de baixo da tela. */
+  padding: var(--space-5) var(--space-5) calc(var(--space-6) * 3);
+}
+
+.empty-hero {
+  width: 100%;
+  max-width: 560px;
+  text-align: center;
+}
+
+.empty-logo {
+  width: 64px;
+  height: 64px;
+  display: block;
+  margin: 0 auto var(--space-4);
+}
+
+.empty-hero h1 {
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  margin: 0 0 var(--space-2);
+  color: var(--text-primary);
+}
+
+.empty-subtitle {
+  font-size: var(--text-base);
+  color: var(--text-secondary);
+  line-height: 1.55;
+  margin: 0 0 var(--space-6);
 }
 
 #dropzone {
   width: 420px;
-  max-width: 90vw;
+  max-width: 100%;
+  margin: 0 auto;
   padding: var(--space-6) var(--space-5);
   border: 1.5px dashed var(--border-strong);
   border-radius: var(--radius-lg);
@@ -186,6 +221,29 @@
   color: var(--text-secondary);
   font-size: var(--text-sm);
   margin: 0 0 var(--space-4);
+}
+
+.empty-trust-list {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-2) var(--space-5);
+  margin: var(--space-5) 0 0;
+  padding: 0;
+}
+.empty-trust-list li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}
+.empty-trust-list .icon {
+  width: 15px;
+  height: 15px;
+  color: var(--success);
+  flex-shrink: 0;
 }
 
 /* Toasts */

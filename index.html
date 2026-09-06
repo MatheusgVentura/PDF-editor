@@ -4,6 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Editor de PDF</title>
+  <link rel="icon" type="image/png" href="design/logo/favicon.png" />
   <link rel="stylesheet" href="css/base.css" />
   <link rel="stylesheet" href="css/components.css" />
   <link rel="stylesheet" href="css/thumbnails.css" />
@@ -42,11 +43,25 @@
     </main>
 
     <div id="empty-state">
-      <div id="dropzone">
-        <svg class="icon" viewBox="0 0 24 24"><path d="M12 3v12m0 0-4-4m4 4 4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
-        <h2>Arraste um PDF aqui</h2>
-        <p>ou escolha um arquivo do seu computador</p>
-        <button id="btn-choose-file" class="btn btn-primary">Escolher arquivo</button>
+      <div class="empty-hero">
+        <img src="design/logo/favicon.png" alt="" class="empty-logo" />
+        <h1>Edite, organize e assine PDFs sem sair do navegador</h1>
+        <p class="empty-subtitle">
+          Gratuito e privado — seus arquivos nunca saem do seu computador. Sem paywall, sem conta, sem upload.
+        </p>
+
+        <div id="dropzone">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M12 3v12m0 0-4-4m4 4 4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
+          <h2>Arraste um PDF aqui</h2>
+          <p>ou escolha um arquivo do seu computador</p>
+          <button id="btn-choose-file" class="btn btn-primary">Escolher arquivo</button>
+        </div>
+
+        <ul class="empty-trust-list">
+          <li><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>100% local, nada é enviado a servidores</li>
+          <li><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Grátis, sem conta e sem limite de uso</li>
+          <li><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Código aberto</li>
+        </ul>
       </div>
     </div>
 
