@@ -15,11 +15,17 @@ export async function compressSafe(exportDoc, fileName) {
   return { before: beforeBytes.length, after: afterBytes.length };
 }
 
-export async function compressAggressive(exportPdfjsDoc, fileName, { scale = 1.25, quality = 0.7 } = {}) {
+export async function compressAggressive(
+  exportPdfjsDoc,
+  fileName,
+  { scale = 1.25, quality = 0.7, signal, onProgress } = {}
+) {
   const newDoc = await PDFDocument.create();
   const count = exportPdfjsDoc.numPages;
 
   for (let i = 1; i <= count; i++) {
+    if (signal?.aborted) return null;
+    onProgress?.(i - 1, count);
     const page = await exportPdfjsDoc.getPage(i);
     const viewport = page.getViewport({ scale, rotation: page.rotate });
     const canvas = document.createElement('canvas');
@@ -37,6 +43,8 @@ export async function compressAggressive(exportPdfjsDoc, fileName, { scale = 1.2
     const newPage = newDoc.addPage([visualWidth, visualHeight]);
     newPage.drawImage(jpgImage, { x: 0, y: 0, width: visualWidth, height: visualHeight });
   }
+  onProgress?.(count, count);
+  if (signal?.aborted) return null;
 
   const outBytes = await newDoc.save();
   downloadBlob(new Blob([outBytes], { type: 'application/pdf' }), suggestName(fileName, 'comprimido-agressivo'));

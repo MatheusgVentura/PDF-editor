@@ -8,6 +8,7 @@ import {
 import { pickFile, setupDropzone, fileToBytes, downloadBlob, suggestName } from './core/file-io.js';
 import { showError, showSuccess } from './ui/toast.js';
 import { confirmDialog, openModal } from './ui/modal.js';
+import { openProgressModal } from './ui/progress-modal.js';
 import { icons } from './ui/icons.js';
 import './ui/thumbnail-strip.js';
 import { renderOverlays, clearSelection, startFreehandTool, startLineTool } from './content-editor/overlay-renderer.js';
@@ -454,8 +455,22 @@ function renderExportPanel(container) {
   document.getElementById('btn-export-all-png').addEventListener('click', async () => {
     const scale = Number(document.getElementById('export-scale').value);
     const { exportPdfjsDoc } = await getExportContext();
-    showSuccess('Exportando páginas — se o navegador perguntar, permita múltiplos downloads.');
-    await exportAllPagesAsPng(exportPdfjsDoc, editorState.fileName, scale);
+    showSuccess('Se o navegador perguntar, permita múltiplos downloads.');
+    const progress = openProgressModal('Exportando páginas');
+    try {
+      await exportAllPagesAsPng(exportPdfjsDoc, editorState.fileName, scale, {
+        signal: progress.signal,
+        onProgress: (current, total) => progress.update(current, total, `Página ${Math.min(current + 1, total)} de ${total}`)
+      });
+    } catch (err) {
+      progress.close();
+      console.error(err);
+      showError('Não foi possível exportar as páginas.');
+      return;
+    }
+    progress.close();
+    if (progress.signal.aborted) showError('Exportação cancelada.');
+    else showSuccess('Exportação concluída.');
   });
 
   document.getElementById('btn-export-text').addEventListener('click', async () => {
@@ -479,9 +494,22 @@ function renderExportPanel(container) {
     });
     if (!ok) return;
     const { exportPdfjsDoc } = await getExportContext();
-    showSuccess('Comprimindo, isso pode levar alguns segundos...');
-    const size = await compressAggressive(exportPdfjsDoc, editorState.fileName);
-    showSuccess(`Arquivo comprimido gerado (${formatBytes(size)}).`);
+    const progress = openProgressModal('Comprimindo PDF');
+    let size;
+    try {
+      size = await compressAggressive(exportPdfjsDoc, editorState.fileName, {
+        signal: progress.signal,
+        onProgress: (current, total) => progress.update(current, total, `Página ${Math.min(current + 1, total)} de ${total}`)
+      });
+    } catch (err) {
+      progress.close();
+      console.error(err);
+      showError('Não foi possível comprimir o PDF.');
+      return;
+    }
+    progress.close();
+    if (size === null) showError('Compressão cancelada.');
+    else showSuccess(`Arquivo comprimido gerado (${formatBytes(size)}).`);
   });
 }
 

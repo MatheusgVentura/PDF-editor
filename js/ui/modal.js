@@ -4,13 +4,13 @@ function onBackdropClick(e) {
   if (e.target === root) closeModal();
 }
 
-export function openModal(buildFn) {
+export function openModal(buildFn, { dismissible = true } = {}) {
   root.innerHTML = '';
   root.hidden = false;
   const box = document.createElement('div');
   box.className = 'modal';
   root.appendChild(box);
-  root.addEventListener('click', onBackdropClick);
+  if (dismissible) root.addEventListener('click', onBackdropClick);
   buildFn(box, closeModal);
   return box;
 }

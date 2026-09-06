@@ -12,10 +12,13 @@ export async function exportPageAsPng(pdfjsDoc, pageIndex, fileName, scale) {
   downloadBlob(blob, suggestName(fileName, `pagina-${pageIndex + 1}`, 'png'));
 }
 
-export async function exportAllPagesAsPng(pdfjsDoc, fileName, scale) {
+export async function exportAllPagesAsPng(pdfjsDoc, fileName, scale, { signal, onProgress } = {}) {
   const count = pdfjsDoc.numPages;
   for (let i = 0; i < count; i++) {
+    if (signal?.aborted) return;
+    onProgress?.(i, count);
     await exportPageAsPng(pdfjsDoc, i, fileName, scale);
     if (i < count - 1) await delay(250);
   }
+  onProgress?.(count, count);
 }
