@@ -14,5 +14,8 @@ export const icons = {
   duplicate: '<svg class="icon" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>',
   filePlus: '<svg class="icon" viewBox="0 0 24 24"><path d="M13 3H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V8z"/><path d="M13 3v5h5"/><path d="M12 12v6M9 15h6"/></svg>',
   hash: '<svg class="icon" viewBox="0 0 24 24"><path d="M9 4 7 20M17 4l-2 16M4 9h16M3 15h16"/></svg>',
-  droplet: '<svg class="icon" viewBox="0 0 24 24"><path d="M12 3s6 6.5 6 11a6 6 0 1 1-12 0c0-4.5 6-11 6-11Z"/></svg>'
+  droplet: '<svg class="icon" viewBox="0 0 24 24"><path d="M12 3s6 6.5 6 11a6 6 0 1 1-12 0c0-4.5 6-11 6-11Z"/></svg>',
+  line: '<svg class="icon" viewBox="0 0 24 24"><path d="M4 20 20 4"/></svg>',
+  arrow: '<svg class="icon" viewBox="0 0 24 24"><path d="M4 20 20 4M20 4h-7M20 4v7"/></svg>',
+  pencil: '<svg class="icon" viewBox="0 0 24 24"><path d="m4 20 1-5L16 4l4 4L9 19l-5 1Z"/></svg>'
 };

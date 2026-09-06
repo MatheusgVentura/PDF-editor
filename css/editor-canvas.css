@@ -81,10 +81,6 @@
   background: #ffdfc9;
 }
 .overlay-text > .overlay-handle {
-  right: -10px;
-  bottom: -10px;
-  width: 10px;
-  height: 10px;
   border: 1.5px solid var(--accent);
   background: var(--surface);
   border-radius: 3px;
@@ -208,12 +204,27 @@
   pointer-events: none;
 }
 
-.overlay-item.overlay-rect,
-.overlay-item.overlay-ellipse {
-  background: transparent;
+.overlay-item.overlay-rect svg,
+.overlay-item.overlay-ellipse svg,
+.overlay-item.overlay-line svg,
+.overlay-item.overlay-arrow svg,
+.overlay-item.overlay-freehand svg {
+  pointer-events: none;
+  overflow: visible;
 }
-.overlay-item.overlay-ellipse {
-  border-radius: 50%;
+
+/* Enquanto arma um modo de arraste (linha, seta ou desenho livre), os overlays
+   existentes não devem roubar o pointerdown do layer - assim o traço começa
+   em qualquer ponto da página. */
+#overlay-layer.drawing-mode .overlay-item {
+  pointer-events: none;
+}
+.draw-preview {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
 }
 
 .overlay-item.overlay-watermark {
@@ -232,13 +243,21 @@
   position: absolute;
   width: 9px;
   height: 9px;
-  right: -5px;
-  bottom: -5px;
   background: var(--accent);
   border: 1.5px solid #fff;
   border-radius: 2px;
-  cursor: nwse-resize;
+  z-index: 3;
 }
+/* Uma alça por canto/lado - permite redimensionar de qualquer direção,
+   não só arrastando o canto inferior direito. */
+.overlay-handle-nw { top: -5px; left: -5px; cursor: nwse-resize; }
+.overlay-handle-n { top: -5px; left: calc(50% - 4.5px); cursor: ns-resize; }
+.overlay-handle-ne { top: -5px; right: -5px; cursor: nesw-resize; }
+.overlay-handle-e { top: calc(50% - 4.5px); right: -5px; cursor: ew-resize; }
+.overlay-handle-se { bottom: -5px; right: -5px; cursor: nwse-resize; }
+.overlay-handle-s { bottom: -5px; left: calc(50% - 4.5px); cursor: ns-resize; }
+.overlay-handle-sw { bottom: -5px; left: -5px; cursor: nesw-resize; }
+.overlay-handle-w { top: calc(50% - 4.5px); left: -5px; cursor: ew-resize; }
 
 .overlay-delete {
   position: absolute;

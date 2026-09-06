@@ -10,7 +10,7 @@ import { showError, showSuccess } from './ui/toast.js';
 import { confirmDialog, openModal } from './ui/modal.js';
 import { icons } from './ui/icons.js';
 import './ui/thumbnail-strip.js';
-import { renderOverlays, clearSelection } from './content-editor/overlay-renderer.js';
+import { renderOverlays, clearSelection, startFreehandTool, startLineTool } from './content-editor/overlay-renderer.js';
 import { createExportCopyWithOverlays } from './content-editor/bake.js';
 import { renderOrganizePanel } from './organize/organize-panel.js';
 import { parsePageRanges } from './organize/organize-actions.js';
@@ -18,6 +18,7 @@ import { renderFormsPanel } from './forms/form-render.js';
 import { addTextOverlay } from './content-editor/tools/text-tool.js';
 import { addImageOverlay } from './content-editor/tools/image-tool.js';
 import { openSignaturePad } from './content-editor/tools/signature-tool.js';
+import { addShapeOverlay } from './content-editor/tools/shape-tool.js';
 import { applyPageNumbers, removePageNumbers } from './content-editor/tools/page-number-tool.js';
 import { applyWatermark, removeWatermark } from './content-editor/tools/watermark-tool.js';
 import { exportPageAsPng, exportAllPagesAsPng } from './export/export-images.js';
@@ -144,6 +145,29 @@ function renderContentPanel(container) {
       </div>
     </div>
     <div class="panel-section">
+      <h4>Formas Geométricas</h4>
+      <div class="panel-row">
+        <button class="btn btn-ghost" id="tool-rect">${icons.square} Retângulo</button>
+        <button class="btn btn-ghost" id="tool-ellipse">${icons.circle} Elipse</button>
+      </div>
+      <div class="panel-row">
+        <button class="btn btn-ghost" id="tool-line">${icons.line} Linha</button>
+        <button class="btn btn-ghost" id="tool-arrow">${icons.arrow} Seta</button>
+      </div>
+      <div class="panel-row">
+        <button class="btn btn-ghost" id="tool-freehand">${icons.pencil} Desenho livre</button>
+      </div>
+      <p class="panel-note">
+        Retângulo e elipse já vêm posicionados; arraste ou redimensione depois.
+        Linha, seta e desenho livre: clique no botão e arraste sobre a página
+        para traçar do jeito que quiser.
+      </p>
+      <p class="panel-note">
+        Com a forma selecionada, use a barra para ajustar cor, preenchimento
+        (retângulo/elipse), espessura e transparência.
+      </p>
+    </div>
+    <div class="panel-section">
       <h4>Numeração e marca-d'água</h4>
       <div class="panel-row">
         <button class="btn btn-ghost" id="tool-page-numbers">${icons.hash} Numeração de páginas</button>
@@ -176,6 +200,11 @@ function renderContentPanel(container) {
   document.getElementById('tool-text').addEventListener('click', addTextOverlay);
   document.getElementById('tool-image').addEventListener('click', () => addImageOverlay(els.fileInputImage));
   document.getElementById('tool-signature').addEventListener('click', openSignaturePad);
+  document.getElementById('tool-rect').addEventListener('click', () => addShapeOverlay('rect'));
+  document.getElementById('tool-ellipse').addEventListener('click', () => addShapeOverlay('ellipse'));
+  document.getElementById('tool-line').addEventListener('click', () => startLineTool('line'));
+  document.getElementById('tool-arrow').addEventListener('click', () => startLineTool('arrow'));
+  document.getElementById('tool-freehand').addEventListener('click', startFreehandTool);
   document.getElementById('tool-page-numbers').addEventListener('click', openPageNumberModal);
   document.getElementById('tool-watermark').addEventListener('click', openWatermarkModal);
 }

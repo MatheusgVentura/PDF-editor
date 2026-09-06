@@ -1,4 +1,4 @@
-import { PDFDocument, rgb, degrees, StandardFonts } from '../../vendor/pdf-lib/pdf-lib.esm.min.js';
+import { PDFDocument, rgb, degrees, StandardFonts, LineCapStyle } from '../../vendor/pdf-lib/pdf-lib.esm.min.js';
 
 const FONT_ASCENT_RATIO = 0.8;
 
@@ -14,6 +14,24 @@ async function embedOverlayImage(pdfDoc, overlay, imageCache) {
 
 function toRgbColor(c) {
   return rgb(c.r, c.g, c.b);
+}
+
+// Linha/seta/desenho livre guardam pontos normalizados (0..1) dentro da caixa
+// do overlay - converte para o ponto absoluto em espaco PDF antes de desenhar.
+function absolutePoint(overlay, p) {
+  return { x: overlay.x + p.x * overlay.width, y: overlay.y - p.y * overlay.height };
+}
+
+// Ponta da seta como um "V" (mesma matemática do preview em overlay-renderer.js,
+// só que em espaço PDF), para o resultado exportado bater com o que se vê na tela.
+function drawArrowHead(page, a, b, options) {
+  const angle = Math.atan2(b.y - a.y, b.x - a.x);
+  const headLength = Math.max(6, options.thickness * 3.5);
+  const spread = Math.PI / 7;
+  const left = { x: b.x - headLength * Math.cos(angle - spread), y: b.y - headLength * Math.sin(angle - spread) };
+  const right = { x: b.x - headLength * Math.cos(angle + spread), y: b.y - headLength * Math.sin(angle + spread) };
+  page.drawLine({ start: b, end: left, ...options });
+  page.drawLine({ start: b, end: right, ...options });
 }
 
 export async function bakeOverlaysIntoDoc(pdfDoc, pagesData) {
@@ -54,6 +72,7 @@ export async function bakeOverlaysIntoDoc(pdfDoc, pagesData) {
           break;
         }
         case 'rect': {
+          const opacity = overlay.opacity ?? 1;
           page.drawRectangle({
             x: overlay.x,
             y: overlay.y - overlay.height,
@@ -61,11 +80,13 @@ export async function bakeOverlaysIntoDoc(pdfDoc, pagesData) {
             height: overlay.height,
             borderColor: toRgbColor(overlay.strokeColor),
             borderWidth: overlay.lineWidth,
-            ...(overlay.fillColor ? { color: toRgbColor(overlay.fillColor) } : {})
+            borderOpacity: opacity,
+            ...(overlay.fillColor ? { color: toRgbColor(overlay.fillColor), opacity } : {})
           });
           break;
         }
         case 'ellipse': {
+          const opacity = overlay.opacity ?? 1;
           page.drawEllipse({
             x: overlay.x + overlay.width / 2,
             y: overlay.y - overlay.height / 2,
@@ -73,8 +94,37 @@ export async function bakeOverlaysIntoDoc(pdfDoc, pagesData) {
             yScale: overlay.height / 2,
             borderColor: toRgbColor(overlay.strokeColor),
             borderWidth: overlay.lineWidth,
-            ...(overlay.fillColor ? { color: toRgbColor(overlay.fillColor) } : {})
+            borderOpacity: opacity,
+            ...(overlay.fillColor ? { color: toRgbColor(overlay.fillColor), opacity } : {})
           });
+          break;
+        }
+        case 'line':
+        case 'arrow': {
+          const [p0, p1] = overlay.points;
+          const a = absolutePoint(overlay, p0);
+          const b = absolutePoint(overlay, p1);
+          const lineOptions = {
+            thickness: overlay.lineWidth,
+            color: toRgbColor(overlay.strokeColor),
+            opacity: overlay.opacity ?? 1,
+            lineCap: LineCapStyle.Round
+          };
+          page.drawLine({ start: a, end: b, ...lineOptions });
+          if (overlay.type === 'arrow') drawArrowHead(page, a, b, lineOptions);
+          break;
+        }
+        case 'freehand': {
+          const points = (overlay.points || []).map((p) => absolutePoint(overlay, p));
+          const lineOptions = {
+            thickness: overlay.lineWidth,
+            color: toRgbColor(overlay.strokeColor),
+            opacity: overlay.opacity ?? 1,
+            lineCap: LineCapStyle.Round
+          };
+          for (let p = 0; p < points.length - 1; p++) {
+            page.drawLine({ start: points[p], end: points[p + 1], ...lineOptions });
+          }
           break;
         }
         case 'watermark': {
