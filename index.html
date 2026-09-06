@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Editor de PDF</title>
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/thumbnails.css" />
+  <link rel="stylesheet" href="css/editor-canvas.css" />
+  <link rel="stylesheet" href="css/forms.css" />
+</head>
+<body>
+  <div id="app">
+    <header id="topbar">
+      <div class="topbar-left">
+        <span class="app-title">Editor de PDF</span>
+        <span id="file-name" class="file-name"></span>
+      </div>
+      <div class="topbar-right">
+        <button id="btn-open" class="btn btn-ghost">Abrir PDF</button>
+        <button id="btn-save" class="btn btn-primary" hidden>Salvar alterações</button>
+      </div>
+    </header>
+
+    <nav id="mode-tabs" hidden>
+      <button class="mode-tab" data-mode="organize">Organizar</button>
+      <button class="mode-tab" data-mode="content">Adicionar Conteúdo</button>
+      <button class="mode-tab" data-mode="forms">Preencher Formulário</button>
+      <button class="mode-tab" data-mode="export">Exportar</button>
+    </nav>
+
+    <main id="workspace" hidden>
+      <aside id="thumbnail-strip"></aside>
+      <section id="viewport-area">
+        <div id="page-viewport">
+          <canvas id="page-canvas"></canvas>
+          <div id="overlay-layer"></div>
+        </div>
+      </section>
+      <aside id="side-panel"></aside>
+    </main>
+
+    <div id="empty-state">
+      <div id="dropzone">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M12 3v12m0 0-4-4m4 4 4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
+        <h2>Arraste um PDF aqui</h2>
+        <p>ou escolha um arquivo do seu computador</p>
+        <button id="btn-choose-file" class="btn btn-primary">Escolher arquivo</button>
+      </div>
+    </div>
+
+    <input type="file" id="file-input" accept="application/pdf" hidden />
+    <input type="file" id="file-input-merge" accept="application/pdf" hidden />
+    <input type="file" id="file-input-image" accept="image/png,image/jpeg" hidden />
+
+    <div id="toast-container"></div>
+    <div id="modal-root" hidden></div>
+  </div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
