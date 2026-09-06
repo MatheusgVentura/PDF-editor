@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="design/logo/Logo%20Editor%20PDF.jpg" alt="Logo Editor de PDF" width="160">
+<img src="design/logo/Logo%20Editor%20PDF.jpg" alt="Logo Editor de PDF" width="280">
 
 # 📄 Editor de PDF
 
@@ -24,22 +24,14 @@ A maioria dos editores de PDF "grátis" na internet trava as funções básicas 
 ### 🗂️ Organizar páginas
 Mesclar PDFs, arrastar para reordenar, girar ou excluir páginas, extrair uma seleção ou dividir o documento por intervalo de páginas.
 
-![Organizar páginas](docs/screenshots/organizar.png)
-
 ### ✏️ Adicionar conteúdo
 Insira texto, imagens, formas (retângulo/elipse) e uma assinatura desenhada à mão diretamente sobre as páginas — arraste, redimensione e edite antes de salvar.
-
-![Adicionar conteúdo](docs/screenshots/adicionar-conteudo.png)
 
 ### 📝 Preencher formulários
 Detecta automaticamente campos de formulário (texto, caixas de seleção, botões de opção, listas suspensas) já existentes no PDF e permite preenchê-los, com opção de achatar os campos ao salvar.
 
-![Preencher formulários](docs/screenshots/formularios.png)
-
 ### 📤 Converter e exportar
 Exporte páginas como imagem PNG, extraia todo o texto do documento, ou comprima o arquivo (modo seguro, sem perdas, ou modo agressivo para PDFs escaneados).
-
-![Exportar](docs/screenshots/exportar.png)
 
 ## Como usar
 
