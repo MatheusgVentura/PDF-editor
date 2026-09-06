@@ -7,7 +7,7 @@ export { pdfjsLib };
 
 export class EncryptedPdfNotSupportedError extends Error {
   constructor() {
-    super('Este PDF esta protegido por senha. PDFs criptografados nao sao suportados nesta versao.');
+    super('Este PDF está protegido por senha. PDFs criptografados não são suportados nesta versão.');
     this.name = 'EncryptedPdfNotSupportedError';
   }
 }
@@ -31,10 +31,10 @@ export async function resyncPdfjsFromPdfLib(pdfLibDoc) {
   return pdfjsLib.getDocument({ data: bytes }).promise;
 }
 
-// pdf.js nao permite duas render() concorrentes no mesmo canvas. Como o canvas
-// principal e reaproveitado entre paginas/eventos, cada canvas guarda um token
-// de sequencia (incrementado de forma sincrona, antes de qualquer await) para
-// que so a chamada mais recente chegue a de fato desenhar — qualquer chamada
+// pdf.js não permite duas render() concorrentes no mesmo canvas. Como o canvas
+// principal é reaproveitado entre páginas/eventos, cada canvas guarda um token
+// de sequência (incrementado de forma síncrona, antes de qualquer await) para
+// que só a chamada mais recente chegue a de fato desenhar — qualquer chamada
 // mais antiga que ainda esteja "a caminho" desiste assim que percebe que foi
 // superada, em vez de disputar o canvas com a mais nova.
 const canvasRenderState = new WeakMap();
@@ -45,11 +45,11 @@ export async function renderPageToCanvas(pdfjsDoc, pageIndex, canvas, { scale = 
   if (state.task) state.task.cancel();
   canvasRenderState.set(canvas, state);
 
-  const page = await pdfjsDoc.getPage(pageIndex + 1); // pdf.js e 1-indexado
+  const page = await pdfjsDoc.getPage(pageIndex + 1); // pdf.js é 1-indexado
   const viewport = page.getViewport({ scale, rotation: page.rotate });
 
   if (state.token !== myToken) {
-    // uma chamada mais recente ja assumiu o canvas antes desta continuar
+    // uma chamada mais recente já assumiu o canvas antes desta continuar
     return viewport;
   }
 

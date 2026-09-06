@@ -21,7 +21,7 @@ export async function placeImageBytes(bytes, mimeType) {
   try {
     dims = await getImageDimensions(bytes, mimeType);
   } catch {
-    showError('Nao foi possivel ler essa imagem.');
+    showError('Não foi possível ler essa imagem.');
     return;
   }
 

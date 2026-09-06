@@ -37,8 +37,8 @@
   flex-shrink: 0;
 }
 
-/* Botoes dentro da topbar escura precisam de contraste proprio, ja
-   que .btn-ghost por padrao assume um fundo claro. */
+/* Botões dentro da topbar escura precisam de contraste próprio, já
+   que .btn-ghost por padrão assume um fundo claro. */
 #topbar .btn-ghost {
   color: #fff;
   border-color: rgba(255, 255, 255, 0.3);

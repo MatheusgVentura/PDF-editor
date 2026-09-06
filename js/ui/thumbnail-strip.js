@@ -25,7 +25,7 @@ export async function renderThumbnailStrip() {
       Array.from({ length: count }, (_, i) => renderThumbnail(editorState.pdfjsDoc, i, 140))
     );
   } catch (err) {
-    showError('Nao foi possivel gerar as miniaturas das paginas.');
+    showError('Não foi possível gerar as miniaturas das páginas.');
     return;
   }
 
@@ -84,11 +84,11 @@ function buildTile(index, canvas) {
     const actions = document.createElement('div');
     actions.className = 'thumb-actions';
     actions.innerHTML = `
-      <button class="icon-btn" data-action="duplicate" title="Duplicar pagina">${icons.duplicate}</button>
-      <button class="icon-btn" data-action="insert-blank" title="Inserir pagina em branco depois">${icons.filePlus}</button>
+      <button class="icon-btn" data-action="duplicate" title="Duplicar página">${icons.duplicate}</button>
+      <button class="icon-btn" data-action="insert-blank" title="Inserir página em branco depois">${icons.filePlus}</button>
       <button class="icon-btn" data-action="rotate-left" title="Girar para esquerda">${icons.rotateLeft}</button>
       <button class="icon-btn" data-action="rotate-right" title="Girar para direita">${icons.rotateRight}</button>
-      <button class="icon-btn danger" data-action="delete" title="Excluir pagina">${icons.trash}</button>
+      <button class="icon-btn danger" data-action="delete" title="Excluir página">${icons.trash}</button>
     `;
     actions.querySelector('[data-action="duplicate"]').addEventListener('click', async (e) => {
       e.stopPropagation();
@@ -109,12 +109,12 @@ function buildTile(index, canvas) {
     actions.querySelector('[data-action="delete"]').addEventListener('click', async (e) => {
       e.stopPropagation();
       if (editorState.pageCount <= 1) {
-        showError('O documento precisa ter pelo menos uma pagina.');
+        showError('O documento precisa ter pelo menos uma página.');
         return;
       }
       const ok = await confirmDialog({
-        title: 'Excluir pagina',
-        message: `Excluir a pagina ${index + 1}? Essa acao nao pode ser desfeita depois de salvar.`,
+        title: 'Excluir página',
+        message: `Excluir a página ${index + 1}? Essa ação não pode ser desfeita depois de salvar.`,
         confirmLabel: 'Excluir',
         danger: true
       });

@@ -4,7 +4,7 @@ export function writeText(field, value) {
   try {
     field.setText(value);
   } catch {
-    // valor invalido para o formato do campo (ex.: comb field) - ignora silenciosamente
+    // valor inválido para o formato do campo (ex.: comb field) - ignora silenciosamente
   }
   editorState.markDirty();
 }

@@ -3,10 +3,10 @@ import { writeText, writeCheckbox, writeRadio, writeChoice } from './form-writeb
 
 const TYPE_LABELS = {
   text: 'texto',
-  checkbox: 'caixa de selecao',
-  radio: 'opcoes',
+  checkbox: 'caixa de seleção',
+  radio: 'opções',
   dropdown: 'lista suspensa',
-  optionlist: 'lista de opcoes',
+  optionlist: 'lista de opções',
   unknown: 'desconhecido'
 };
 
@@ -22,7 +22,7 @@ export function renderFormsPanel(container, pdfLibDoc) {
   if (!fields.length) {
     const empty = document.createElement('p');
     empty.className = 'forms-empty';
-    empty.textContent = 'Este PDF nao possui campos de formulario preenchiveis.';
+    empty.textContent = 'Este PDF não possui campos de formulário preenchíveis.';
     container.appendChild(empty);
     return;
   }

@@ -10,8 +10,8 @@ async function afterMutation() {
   editorState.emit('pages-changed');
 }
 
-// Insere a metadata de uma nova pagina (overlays) logo apos `index` e ajusta
-// selecao/pagina ativa para continuar apontando para as mesmas paginas logicas.
+// Insere a metadata de uma nova página (overlays) logo após `index` e ajusta
+// seleção/página ativa para continuar apontando para as mesmas páginas lógicas.
 function insertPageMetaAfter(index, overlays) {
   editorState.pages.splice(index + 1, 0, { overlays });
   editorState.selectedPageIndices = new Set(
@@ -86,9 +86,9 @@ export async function mergeDocument(bytes) {
       editorState.pages.push({ overlays: [] });
     });
     await afterMutation();
-    showSuccess(`${indices.length} pagina(s) adicionada(s) ao documento.`);
+    showSuccess(`${indices.length} página(s) adicionada(s) ao documento.`);
   } catch (err) {
-    showError('Nao foi possivel mesclar esse PDF (pode estar protegido por senha ou corrompido).');
+    showError('Não foi possível mesclar esse PDF (pode estar protegido por senha ou corrompido).');
   }
 }
 
@@ -104,18 +104,18 @@ export function parsePageRanges(rangeString, pageCount) {
   const parts = rangeString.split(',').map((s) => s.trim()).filter(Boolean);
   for (const part of parts) {
     const m = part.match(/^(\d+)(?:-(\d+))?$/);
-    if (!m) throw new Error(`Intervalo invalido: "${part}"`);
+    if (!m) throw new Error(`Intervalo inválido: "${part}"`);
     let start = parseInt(m[1], 10);
     let end = m[2] ? parseInt(m[2], 10) : start;
     if (start > end) [start, end] = [end, start];
     if (start < 1 || end > pageCount) {
-      throw new Error(`Intervalo fora do alcance: "${part}" (documento tem ${pageCount} paginas)`);
+      throw new Error(`Intervalo fora do alcance: "${part}" (documento tem ${pageCount} páginas)`);
     }
     const indices = [];
     for (let p = start; p <= end; p++) indices.push(p - 1);
     groups.push(indices);
   }
-  if (!groups.length) throw new Error('Informe pelo menos um intervalo de paginas.');
+  if (!groups.length) throw new Error('Informe pelo menos um intervalo de páginas.');
   return groups;
 }
 

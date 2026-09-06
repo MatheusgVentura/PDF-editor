@@ -1,7 +1,7 @@
 {
   "name": "editor-de-pdf",
   "version": "1.0.0",
-  "description": "Editor de PDF local, gratuito e offline (organizar paginas, adicionar conteudo, preencher formularios, exportar).",
+  "description": "Editor de PDF local, gratuito e offline (organizar páginas, adicionar conteúdo, preencher formulários, exportar).",
   "private": true,
   "scripts": {
     "start": "node server.js"

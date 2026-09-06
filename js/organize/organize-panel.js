@@ -9,7 +9,7 @@ export function renderOrganizePanel(container) {
   container.innerHTML = `
     <div class="panel-section">
       <h4>Paginas</h4>
-      <p class="panel-note">Arraste as miniaturas para reordenar. Use os icones em cada miniatura para girar ou excluir.</p>
+      <p class="panel-note">Arraste as miniaturas para reordenar. Use os ícones em cada miniatura para girar ou excluir.</p>
     </div>
     <div class="panel-section">
       <h4>Adicionar</h4>
@@ -25,7 +25,7 @@ export function renderOrganizePanel(container) {
       <div class="panel-row">
         <button class="btn btn-ghost" id="btn-split">Dividir por intervalo</button>
       </div>
-      <p class="panel-note">Marque as caixinhas nas miniaturas para escolher as paginas a extrair.</p>
+      <p class="panel-note">Marque as caixinhas nas miniaturas para escolher as páginas a extrair.</p>
     </div>
   `;
 
@@ -40,12 +40,12 @@ export function renderOrganizePanel(container) {
   document.getElementById('btn-extract-selected').addEventListener('click', async () => {
     const indices = Array.from(editorState.selectedPageIndices).sort((a, b) => a - b);
     if (!indices.length) {
-      showError('Selecione ao menos uma pagina (use as caixinhas nas miniaturas).');
+      showError('Selecione ao menos uma página (use as caixinhas nas miniaturas).');
       return;
     }
     const bytes = await extractPages(indices);
     downloadBlob(new Blob([bytes], { type: 'application/pdf' }), suggestName(editorState.fileName, 'paginas-extraidas'));
-    showSuccess(`${indices.length} pagina(s) extraida(s).`);
+    showSuccess(`${indices.length} página(s) extraída(s).`);
   });
 
   document.getElementById('btn-split').addEventListener('click', () => {
@@ -57,10 +57,10 @@ function openSplitModal() {
   openModal((box, close) => {
     box.innerHTML = `
       <h3>Dividir por intervalo</h3>
-      <div class="modal-body">Informe os intervalos de pagina separados por virgula. Exemplo: 1-3, 4, 5-6</div>
+      <div class="modal-body">Informe os intervalos de página separados por vírgula. Exemplo: 1-3, 4, 5-6</div>
       <label class="field-label">Intervalos</label>
       <input type="text" class="text-input" id="split-range-input" placeholder="1-3, 4-6" />
-      <p class="hint">Documento tem ${editorState.pageCount} pagina(s). Cada intervalo vira um arquivo separado.</p>
+      <p class="hint">Documento tem ${editorState.pageCount} página(s). Cada intervalo vira um arquivo separado.</p>
       <div class="modal-actions">
         <button class="btn btn-ghost" data-action="cancel">Cancelar</button>
         <button class="btn btn-primary" data-action="confirm">Dividir</button>

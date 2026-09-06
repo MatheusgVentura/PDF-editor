@@ -31,7 +31,7 @@ function serveFile(req, res, filePath) {
   fs.readFile(filePath, (err, data) => {
     if (err) {
       res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
-      res.end('404 - Arquivo nao encontrado');
+      res.end('404 - Arquivo não encontrado');
       return;
     }
     res.writeHead(200, { 'Content-Type': getMimeType(path.extname(filePath)) });
@@ -53,7 +53,7 @@ function handleRequest(req, res) {
   fs.stat(resolved, (err, stats) => {
     if (err || !stats.isFile()) {
       res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
-      res.end('404 - Arquivo nao encontrado');
+      res.end('404 - Arquivo não encontrado');
       return;
     }
     serveFile(req, res, resolved);
@@ -74,7 +74,7 @@ function openBrowser(url) {
   }
   exec(command, (err) => {
     if (err) {
-      console.log(`Nao foi possivel abrir o navegador automaticamente. Acesse: ${url}`);
+      console.log(`Não foi possível abrir o navegador automaticamente. Acesse: ${url}`);
     }
   });
 }
@@ -86,7 +86,7 @@ function startServer(port, attemptsLeft) {
     if (err.code === 'EADDRINUSE' && attemptsLeft > 0) {
       startServer(port + 1, attemptsLeft - 1);
     } else {
-      console.error(`Nao foi possivel iniciar o servidor: ${err.message}`);
+      console.error(`Não foi possível iniciar o servidor: ${err.message}`);
       process.exitCode = 1;
     }
   });

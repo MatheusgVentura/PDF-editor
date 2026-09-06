@@ -1,13 +1,13 @@
 // Conversao entre pixels de tela (espaco do canvas/viewport do pdf.js) e
-// pontos PDF (espaco nao rotacionado da pagina, usado pelo pdf-lib para desenhar).
+// pontos PDF (espaço não rotacionado da página, usado pelo pdf-lib para desenhar).
 //
-// Overlays sao guardados como uma caixa em espaco PDF: {x, y, width, height},
-// onde (x, y) e o canto com MENOR x e MAIOR y em espaco PDF (ou seja, o canto
-// "superior esquerdo" antes de qualquer rotacao de exibicao). Como a rotacao
-// de pagina do PDF so pode ser 0/90/180/270 graus, converter os dois cantos
-// diagonais da caixa (em vez de tentar transformar so um vetor de tamanho)
-// da sempre a caixa retangular alinhada aos eixos correta na tela, em
-// qualquer rotacao.
+// Overlays são guardados como uma caixa em espaço PDF: {x, y, width, height},
+// onde (x, y) é o canto com MENOR x e MAIOR y em espaço PDF (ou seja, o canto
+// "superior esquerdo" antes de qualquer rotação de exibição). Como a rotação
+// de página do PDF só pode ser 0/90/180/270 graus, converter os dois cantos
+// diagonais da caixa (em vez de tentar transformar só um vetor de tamanho)
+// dá sempre a caixa retangular alinhada aos eixos correta na tela, em
+// qualquer rotação.
 
 export function toPdfPoint(viewport, x, y) {
   const [pdfX, pdfY] = viewport.convertToPdfPoint(x, y);
