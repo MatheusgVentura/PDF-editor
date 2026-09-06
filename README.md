@@ -50,9 +50,11 @@ O navegador abre automaticamente em `http://localhost:8420`. Nenhum dado do seu 
 ## Stack
 
 - **JavaScript puro** (sem framework, sem bundler, sem passo de build) — todo o app é ES modules nativos carregados direto pelo navegador.
-- **[pdf.js](https://github.com/mozilla/pdf.js)** (Mozilla, Apache 2.0) — renderização de páginas e extração de texto.
-- **[pdf-lib](https://github.com/Hopding/pdf-lib)** (MIT) — criação, edição e escrita de PDFs.
+- **[pdf.js](https://github.com/mozilla/pdf.js)** (Mozilla, [Apache 2.0](vendor/pdfjs/LICENSE)) — renderização de páginas e extração de texto.
+- **[pdf-lib](https://github.com/Hopding/pdf-lib)** ([MIT](vendor/pdf-lib/LICENSE)) — criação, edição e escrita de PDFs.
 - Um servidor Node estático de ~80 linhas, zero dependências, só para contornar a restrição de módulos ES via `file://` no Chromium.
+
+Os bundles de `pdf.js` e `pdf-lib` em `vendor/` são pré-compilados e commitados no repo (ver [CLAUDE.md](CLAUDE.md)); as licenças originais de cada um ficam junto do bundle, em `vendor/pdfjs/LICENSE` e `vendor/pdf-lib/LICENSE`. O [LICENSE](LICENSE) MIT na raiz cobre só o código deste projeto.
 
 ## Limitações conhecidas (v1)
 
