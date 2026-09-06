@@ -84,14 +84,46 @@ setupDropzone(els.dropzone, (files) => {
 // ---------- Renderização da página ativa ----------
 
 let renderPageToken = 0;
+const zoomSelect = document.getElementById('zoom-select');
+const viewportArea = document.getElementById('viewport-area');
+
+function updateDocumentNavigation() {
+  const count = editorState.pageCount;
+  document.getElementById('page-count').textContent = count;
+  document.getElementById('page-position').textContent = `Página ${count ? editorState.activePageIndex + 1 : 0} de ${count}`;
+  document.getElementById('btn-prev-page').disabled = editorState.activePageIndex <= 0;
+  document.getElementById('btn-next-page').disabled = editorState.activePageIndex >= count - 1;
+}
+
+document.getElementById('btn-prev-page').addEventListener('click', () => editorState.setActivePage(editorState.activePageIndex - 1));
+document.getElementById('btn-next-page').addEventListener('click', () => editorState.setActivePage(editorState.activePageIndex + 1));
+zoomSelect.addEventListener('change', renderActivePage);
+let resizeTimer;
+let previousViewportWidth = 0;
+new ResizeObserver(([entry]) => {
+  if (Math.abs(entry.contentRect.width - previousViewportWidth) < 1) return;
+  previousViewportWidth = entry.contentRect.width;
+  if (zoomSelect.value !== 'fit' || !editorState.hasDocument) return;
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(renderActivePage, 120);
+}).observe(viewportArea);
 
 async function renderActivePage() {
   if (!editorState.pdfjsDoc) return;
   clearSelection();
   const token = ++renderPageToken;
   try {
+    let scale = Number(zoomSelect.value);
+    if (zoomSelect.value === 'fit') {
+      const page = await editorState.pdfjsDoc.getPage(editorState.activePageIndex + 1);
+      if (token !== renderPageToken) return;
+      const base = page.getViewport({ scale: 1, rotation: page.rotate });
+      const style = getComputedStyle(viewportArea);
+      const availableWidth = viewportArea.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
+      scale = Math.max(0.1, Math.min(2, (availableWidth - 2) / base.width));
+    }
     const viewport = await renderPageToCanvas(editorState.pdfjsDoc, editorState.activePageIndex, els.pageCanvas, {
-      scale: 1.5
+      scale
     });
     if (token !== renderPageToken) return; // uma chamada mais recente já assumiu o canvas
     editorState.currentViewport = viewport;
@@ -105,6 +137,7 @@ async function renderActivePage() {
 editorState.addEventListener('document-loaded', renderActivePage);
 editorState.addEventListener('active-page-changed', renderActivePage);
 editorState.addEventListener('pages-changed', renderActivePage);
+['document-loaded', 'pages-changed', 'active-page-changed'].forEach((event) => editorState.addEventListener(event, updateDocumentNavigation));
 
 // ---------- Abas de modo ----------
 
@@ -115,7 +148,9 @@ document.querySelectorAll('.mode-tab').forEach((tab) => {
 editorState.addEventListener('mode-changed', () => {
   document.querySelectorAll('.mode-tab').forEach((tab) => {
     tab.classList.toggle('active', tab.dataset.mode === editorState.mode);
+    tab.setAttribute('aria-pressed', String(tab.dataset.mode === editorState.mode));
   });
+  els.workspace.dataset.mode = editorState.mode;
   renderSidePanel();
 });
 
@@ -129,6 +164,18 @@ function renderSidePanel() {
   else if (editorState.mode === 'content') renderContentPanel(panel);
   else if (editorState.mode === 'forms') renderFormsPanelWrapper(panel);
   else if (editorState.mode === 'export') renderExportPanel(panel);
+  const descriptions = {
+    organize: ['Organizar páginas', 'Prepare seu documento na ordem certa.'],
+    content: ['Adicionar conteúdo', 'Um toque seu em cada página.'],
+    forms: ['Preencher formulário', 'Complete os campos do documento.'],
+    export: ['Exportar documento', 'Escolha como levar seu trabalho.']
+  };
+  const [title, description] = descriptions[editorState.mode];
+  const heading = document.createElement('div');
+  heading.className = 'panel-heading';
+  heading.innerHTML = `<h2>${title}</h2><p>${description}</p>`;
+  panel.prepend(heading);
+  panel.scrollTop = 0;
 }
 
 // ---------- Painel: Adicionar Conteúdo ----------
@@ -136,17 +183,15 @@ function renderSidePanel() {
 function renderContentPanel(container) {
   container.innerHTML = `
     <div class="panel-section">
-      <h4>Adicionar</h4>
-      <div class="panel-row">
+      <h4>Essenciais</h4>
+      <div class="tool-grid">
         <button class="btn btn-ghost" id="tool-text">${icons.text} Texto</button>
         <button class="btn btn-ghost" id="tool-image">${icons.image} Imagem</button>
-      </div>
-      <div class="panel-row">
         <button class="btn btn-ghost" id="tool-signature">${icons.signature} Assinatura</button>
       </div>
     </div>
     <div class="panel-section">
-      <h4>Formas Geométricas</h4>
+      <h4>Formas e desenho</h4>
       <div class="panel-row">
         <button class="btn btn-ghost" id="tool-rect">${icons.square} Retângulo</button>
         <button class="btn btn-ghost" id="tool-ellipse">${icons.circle} Elipse</button>
@@ -158,44 +203,28 @@ function renderContentPanel(container) {
       <div class="panel-row">
         <button class="btn btn-ghost" id="tool-freehand">${icons.pencil} Desenho livre</button>
       </div>
-      <p class="panel-note">
-        Retângulo e elipse já vêm posicionados; arraste ou redimensione depois.
-        Linha, seta e desenho livre: clique no botão e arraste sobre a página
-        para traçar do jeito que quiser.
-      </p>
-      <p class="panel-note">
-        Com a forma selecionada, use a barra para ajustar cor, preenchimento
-        (retângulo/elipse), espessura e transparência.
-      </p>
+      <p class="panel-note">Selecione uma forma para ajustar cor, espessura e transparência.</p>
     </div>
     <div class="panel-section">
-      <h4>Numeração e marca-d'água</h4>
+      <h4>Aplicar ao documento</h4>
       <div class="panel-row">
-        <button class="btn btn-ghost" id="tool-page-numbers">${icons.hash} Numeração de páginas</button>
+        <button class="btn btn-ghost" id="tool-page-numbers">${icons.hash} Numerar páginas</button>
       </div>
       <div class="panel-row">
         <button class="btn btn-ghost" id="tool-watermark">${icons.droplet} Marca-d'água</button>
       </div>
       <p class="panel-note">
-        Aplica a todas as páginas ou a um intervalo. Cada número/marca vira um texto
-        normal sobre a página — pode ser movido, editado ou excluído como qualquer outro.
+        Aplique a todas as páginas ou escolha um intervalo.
       </p>
     </div>
-    <div class="panel-section">
-      <p class="panel-note">
-        Adicione um texto e comece a digitar. Use a barra sobre a seleção para ajustar tamanho e cor.
-        Clique fora para concluir ou dê um duplo clique para editar novamente.
-      </p>
-      <p class="panel-note">
-        Arraste para posicionar e use a alça no canto para redimensionar.
-        Ctrl+Enter conclui a digitação; Esc cancela a edição atual.
-        O conteúdo é adicionado sobre o PDF, sem alterar o texto original.
-      </p>
-      <p class="panel-note">
-        Com um elemento selecionado: Ctrl+D duplica na mesma página,
-        Ctrl+C copia e Ctrl+V cola — inclusive em outra página do documento.
-      </p>
-    </div>
+    <details class="panel-help">
+      <summary>Dicas e atalhos</summary>
+      <p>Arraste para posicionar. Use as alças para redimensionar e dê um duplo clique no texto para editar.</p>
+      <p><kbd>Ctrl+Enter</kbd> conclui a digitação. <kbd>Esc</kbd> cancela a edição atual.</p>
+      <p><kbd>Ctrl+D</kbd> duplica. <kbd>Ctrl+C</kbd> e <kbd>Ctrl+V</kbd> copiam e colam, inclusive entre páginas. <kbd>Delete</kbd> exclui o elemento selecionado.</p>
+      <p>Para linha, seta e desenho livre, escolha a ferramenta e arraste sobre a página.</p>
+      <p>O conteúdo é adicionado sobre o PDF, sem alterar o texto original.</p>
+    </details>
   `;
 
   document.getElementById('tool-text').addEventListener('click', addTextOverlay);

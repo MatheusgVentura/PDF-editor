@@ -816,12 +816,22 @@ function finishLineDraw(type, startScreen, endScreen, viewport) {
 editorState.addEventListener('mode-changed', cancelFreehandMode);
 editorState.addEventListener('active-page-changed', cancelFreehandMode);
 
-// Copiar/colar/duplicar entre páginas. Só atua fora de campos editáveis
-// (input da barra, texto em edição) para não atropelar o clipboard nativo.
+// Copiar/colar/duplicar/excluir entre páginas. Só atua fora de campos
+// editáveis (input da barra, texto em edição) para não atropelar o
+// clipboard/edição nativos.
 document.addEventListener('keydown', (e) => {
   if (editorState.mode !== 'content') return;
-  if (!(e.ctrlKey || e.metaKey)) return;
   if (e.target.closest?.('input, textarea, [contenteditable="plaintext-only"]')) return;
+
+  if ((e.key === 'Delete' || e.key === 'Backspace') && selectedId) {
+    e.preventDefault();
+    const idToRemove = selectedId;
+    selectedId = null;
+    removeOverlay(editorState.activePageIndex, idToRemove);
+    return;
+  }
+
+  if (!(e.ctrlKey || e.metaKey)) return;
 
   const key = e.key.toLowerCase();
   if (key === 'c' && selectedId) {

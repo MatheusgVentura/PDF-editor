@@ -8,26 +8,29 @@ import { icons } from '../ui/icons.js';
 export function renderOrganizePanel(container) {
   container.innerHTML = `
     <div class="panel-section">
-      <h4>Paginas</h4>
-      <p class="panel-note">Arraste as miniaturas para reordenar. Use os ícones em cada miniatura para girar ou excluir.</p>
-    </div>
-    <div class="panel-section">
-      <h4>Adicionar</h4>
+      <h4>Adicionar ao documento</h4>
       <div class="panel-row">
-        <button class="btn btn-ghost" id="btn-merge">${icons.plus} Mesclar outro PDF</button>
+        <button class="btn btn-ghost" id="btn-merge">${icons.plus}<span class="action-copy">Mesclar outro PDF<small>Reúna arquivos em um documento</small></span></button>
       </div>
     </div>
     <div class="panel-section">
-      <h4>Extrair / Dividir</h4>
+      <h4>Separar páginas</h4>
       <div class="panel-row">
-        <button class="btn btn-ghost" id="btn-extract-selected">Extrair selecionadas</button>
+        <button class="btn btn-ghost" id="btn-extract-selected">${icons.duplicate} Extrair selecionadas</button>
       </div>
       <div class="panel-row">
-        <button class="btn btn-ghost" id="btn-split">Dividir por intervalo</button>
+        <button class="btn btn-ghost" id="btn-split">${icons.filePlus} Dividir por intervalo</button>
       </div>
-      <p class="panel-note">Marque as caixinhas nas miniaturas para escolher as páginas a extrair.</p>
+      <p id="selection-info" class="selection-info" aria-live="polite"></p>
+      <p class="panel-note">Marque as páginas nas miniaturas para criar um novo PDF com a seleção.</p>
     </div>
+    <details class="panel-help" open>
+      <summary>Como organizar</summary>
+      <p>Arraste as miniaturas para mudar a ordem das páginas.</p>
+      <p>Os ícones abaixo de cada página permitem duplicar, inserir uma página em branco, girar e excluir.</p>
+    </details>
   `;
+  updateSelectionInfo();
 
   const mergeInput = document.getElementById('file-input-merge');
   document.getElementById('btn-merge').addEventListener('click', async () => {
@@ -52,6 +55,16 @@ export function renderOrganizePanel(container) {
     openSplitModal();
   });
 }
+
+function updateSelectionInfo() {
+  const count = editorState.selectedPageIndices.size;
+  const info = document.getElementById('selection-info');
+  if (info) info.textContent = count ? `${count} página${count === 1 ? '' : 's'} selecionada${count === 1 ? '' : 's'}` : 'Nenhuma página selecionada';
+  const extract = document.getElementById('btn-extract-selected');
+  if (extract) extract.disabled = count === 0;
+}
+editorState.addEventListener('selection-changed', updateSelectionInfo);
+editorState.addEventListener('pages-changed', updateSelectionInfo);
 
 function openSplitModal() {
   openModal((box, close) => {

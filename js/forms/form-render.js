@@ -1,5 +1,6 @@
 import { getFormFields } from './form-detect.js';
 import { writeText, writeCheckbox, writeRadio, writeChoice } from './form-writeback.js';
+import { icons } from '../ui/icons.js';
 
 const TYPE_LABELS = {
   text: 'texto',
@@ -20,26 +21,27 @@ export function renderFormsPanel(container, pdfLibDoc) {
   const fields = getFormFields(pdfLibDoc);
 
   if (!fields.length) {
-    const empty = document.createElement('p');
+    const empty = document.createElement('div');
     empty.className = 'forms-empty';
-    empty.textContent = 'Este PDF não possui campos de formulário preenchíveis.';
+    empty.innerHTML = `${icons.filePlus}<h3>Nenhum campo encontrado</h3><p>Este PDF não tem campos preenchíveis. Para escrever sobre a página, use a aba <strong>Adicionar conteúdo</strong>.</p>`;
     container.appendChild(empty);
     return;
   }
 
   const list = document.createElement('div');
   list.id = 'forms-panel-list';
-  fields.forEach(({ name, type, field }) => {
-    list.appendChild(buildFieldGroup(name, type, field));
+  fields.forEach(({ name, type, field }, index) => {
+    list.appendChild(buildFieldGroup(name, type, field, index));
   });
   container.appendChild(list);
 }
 
-function buildFieldGroup(name, type, field) {
+function buildFieldGroup(name, type, field, index) {
   const group = document.createElement('div');
   group.className = 'form-field-group';
 
   const label = document.createElement('label');
+  label.id = `form-label-${index}`;
   const nameSpan = document.createElement('span');
   nameSpan.textContent = name;
   const typeSpan = document.createElement('span');
@@ -74,7 +76,7 @@ function buildFieldGroup(name, type, field) {
     const options = field.getOptions();
     const selected = field.getSelected();
     options.forEach((opt) => {
-      const row = document.createElement('div');
+      const row = document.createElement('label');
       row.className = 'radio-option';
       const input = document.createElement('input');
       input.type = 'radio';
@@ -108,5 +110,11 @@ function buildFieldGroup(name, type, field) {
     group.appendChild(select);
   }
 
+  const controls = group.querySelectorAll('input, textarea, select');
+  controls.forEach((control, controlIndex) => {
+    control.id = `form-input-${index}-${controlIndex}`;
+    if (control.type !== 'radio') control.setAttribute('aria-labelledby', label.id);
+  });
+  if (controls.length === 1) label.htmlFor = controls[0].id;
   return group;
 }

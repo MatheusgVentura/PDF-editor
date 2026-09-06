@@ -15,53 +15,73 @@
   <div id="app">
     <header id="topbar">
       <div class="topbar-left">
-        <span class="app-title">Editor de PDF</span>
+        <img class="brand-mark" src="design/logo/favicon.png" alt="" />
+        <span class="app-title">Editor <span>de PDF</span></span>
         <span id="file-name" class="file-name"></span>
       </div>
       <div class="topbar-right">
-        <button id="btn-open" class="btn btn-ghost">Abrir PDF</button>
-        <button id="btn-save" class="btn btn-primary" hidden>Salvar alterações</button>
+        <span class="privacy-label"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>Seus arquivos ficam com você</span>
+        <button id="btn-open" class="btn btn-ghost"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7V5h6l2 2h10v13H3z"/><path d="M3 10h18"/></svg>Abrir PDF</button>
+        <button id="btn-save" class="btn btn-primary" hidden><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-4-4 4 4 4-4M4 17v4h16v-4"/></svg><span>Salvar PDF</span></button>
       </div>
     </header>
 
-    <nav id="mode-tabs" hidden>
-      <button class="mode-tab" data-mode="organize">Organizar</button>
-      <button class="mode-tab" data-mode="content">Adicionar Conteúdo</button>
-      <button class="mode-tab" data-mode="forms">Preencher Formulário</button>
-      <button class="mode-tab" data-mode="export">Exportar</button>
+    <nav id="mode-tabs" aria-label="Ferramentas do editor" hidden>
+      <button class="mode-tab" data-mode="organize"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="6" height="7" rx="1"/><rect x="14" y="4" width="6" height="7" rx="1"/><rect x="4" y="15" width="6" height="5" rx="1"/><rect x="14" y="15" width="6" height="5" rx="1"/></svg>Organizar</button>
+      <button class="mode-tab" data-mode="content"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m4 20 1-5L16 4l4 4L9 19z"/></svg>Adicionar conteúdo</button>
+      <button class="mode-tab" data-mode="forms"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="m7 9 1 1 2-2m-3 7 1 1 2-2m3-5h4m-4 6h4"/></svg>Formulários</button>
+      <button class="mode-tab" data-mode="export"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-4-4 4 4 4-4M4 17v4h16v-4"/></svg>Exportar</button>
     </nav>
 
     <main id="workspace" hidden>
-      <aside id="thumbnail-strip"></aside>
-      <section id="viewport-area">
-        <div id="page-viewport">
-          <canvas id="page-canvas"></canvas>
-          <div id="overlay-layer"></div>
+      <aside id="pages-panel" aria-label="Páginas do documento">
+        <div class="pages-heading"><h2>Páginas</h2><span id="page-count" class="count-badge">0</span></div>
+        <div id="thumbnail-strip"></div>
+        <div class="pages-hint">Clique para navegar</div>
+      </aside>
+      <section id="document-stage" aria-label="Visualização do PDF">
+        <div class="canvas-toolbar">
+          <div class="page-navigation">
+            <button id="btn-prev-page" class="icon-btn" aria-label="Página anterior" title="Página anterior"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m14 6-6 6 6 6"/></svg></button>
+            <span id="page-position" aria-live="polite">Página 1 de 1</span>
+            <button id="btn-next-page" class="icon-btn" aria-label="Próxima página" title="Próxima página"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m10 6 6 6-6 6"/></svg></button>
+          </div>
+          <label class="zoom-control"><span>Zoom</span><select id="zoom-select" aria-label="Zoom da página"><option value="fit">Ajustar à largura</option><option value="0.75">75%</option><option value="1">100%</option><option value="1.25">125%</option><option value="1.5">150%</option><option value="2">200%</option></select></label>
+        </div>
+        <div id="viewport-area">
+          <div id="page-viewport">
+            <canvas id="page-canvas"></canvas>
+            <div id="overlay-layer"></div>
+          </div>
         </div>
       </section>
-      <aside id="side-panel"></aside>
+      <aside id="side-panel" aria-label="Opções da ferramenta"></aside>
     </main>
 
     <div id="empty-state">
       <div class="empty-hero">
-        <img src="design/logo/favicon.png" alt="" class="empty-logo" />
-        <h1>Edite, organize e assine PDFs sem sair do navegador</h1>
-        <p class="empty-subtitle">
-          Gratuito e privado — seus arquivos nunca saem do seu computador. Sem paywall, sem conta, sem upload.
-        </p>
+        <span class="eyebrow">SEU PDF. DO SEU JEITO.</span>
+        <h1>Seu próximo PDF,<br><span>pronto em poucos cliques.</span></h1>
+        <p class="empty-subtitle">Organize páginas, adicione conteúdo e assine documentos. <br>Tudo no seu navegador, com a privacidade que você precisa.</p>
 
         <div id="dropzone">
-          <svg class="icon" viewBox="0 0 24 24"><path d="M12 3v12m0 0-4-4m4 4 4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
+          <div class="upload-symbol" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M12 18v-7m-3 3 3-3 3 3"/></svg></div>
           <h2>Arraste um PDF aqui</h2>
           <p>ou escolha um arquivo do seu computador</p>
-          <button id="btn-choose-file" class="btn btn-primary">Escolher arquivo</button>
+          <button id="btn-choose-file" class="btn btn-primary">Escolher PDF <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-5-5 5 5-5 5"/></svg></button>
+          <span class="upload-caption">Processado no seu dispositivo. Sem upload.</span>
         </div>
 
         <ul class="empty-trust-list">
-          <li><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>100% local, nada é enviado a servidores</li>
-          <li><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Grátis, sem conta e sem limite de uso</li>
+          <li><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>100% gratuito</li>
+          <li><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Sem criar conta</li>
           <li><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Código aberto</li>
         </ul>
+        <div class="welcome-features" aria-label="O que você pode fazer">
+          <div><span class="feature-number">01</span><h3>Organize</h3><p>Junte, reordene e separe páginas.</p></div>
+          <div><span class="feature-number">02</span><h3>Personalize</h3><p>Textos, imagens e assinaturas.</p></div>
+          <div><span class="feature-number">03</span><h3>Exporte</h3><p>Seu documento no formato certo.</p></div>
+        </div>
       </div>
     </div>
 
@@ -69,7 +89,7 @@
     <input type="file" id="file-input-merge" accept="application/pdf" hidden />
     <input type="file" id="file-input-image" accept="image/png,image/jpeg" hidden />
 
-    <div id="toast-container"></div>
+    <div id="toast-container" role="status" aria-live="polite"></div>
     <div id="modal-root" hidden></div>
   </div>
 

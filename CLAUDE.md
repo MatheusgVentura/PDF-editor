@@ -62,10 +62,9 @@ página pode estar rotacionada 0/90/180/270°). Overlays só viram desenho real 
 drawEllipse` sobre a cópia — o documento em edição em memória nunca é "queimado" diretamente, então overlays
 continuam editáveis/removíveis a qualquer momento antes de salvar.
 
-**Tipos de overlay**: `text`, `image`, `signature` (assinatura é só uma imagem PNG gerada a partir de um canvas
-de desenho) estão expostos na aba "Adicionar Conteúdo" (`main.js` → `renderContentPanel`). `rect`/`ellipse`
-existem no model, no renderer e no bake, mas **não têm botão na UI hoje** — foram removidos de propósito (ver
-"Estado atual" abaixo), não é código morto para limpar.
+**Conteúdo disponível** (`main.js` → `renderContentPanel`): textos, imagens, assinaturas (imagens PNG),
+retângulos, elipses, linhas, setas e desenho livre. Há também numeração de páginas e marca-d'água.
+Os controles de estilo ficam na barra flutuante do elemento selecionado.
 
 ## Estado atual / contexto do projeto
 
@@ -74,10 +73,19 @@ existem no model, no renderer e no bake, mas **não têm botão na UI hoje** —
   botão primário/abas ativas/seleção) — extraídas por amostragem de pixel da própria logo. `--bg: #e9ebf0` é o
   cinza-claro por trás da página do PDF, para ela se destacar dos painéis brancos ao redor. README.md também
   referencia a logo no cabeçalho.
-- **Retângulo/Elipse removidos da UI de propósito**: o usuário pediu para tirar esses botões porque "não
-  servem para nada por enquanto" — só voltam quando existir uma aba dedicada de "Formas Geométricas" com opção
-  de cor. Não remover `shape-tool.js` nem o suporte a `rect`/`ellipse` em `overlay-renderer.js`/`bake.js`, eles
-  ficam prontos para quando essa aba for construída.
+- **Interface**: a tela inicial tem área ampla para abrir/arrastar PDFs; o editor tem abas com ícones,
+  miniaturas em `#pages-panel`, visualização em `#document-stage` e ferramentas em `#side-panel`.
+  `#thumbnail-strip` mantém o mesmo ID e fica dentro do painel de páginas. Os painéis recebem título
+  e descrição via `renderSidePanel()`. Instruções detalhadas de conteúdo ficam em "Dicas e atalhos".
+  Em telas de até 900 px, o painel de ferramentas vai para baixo da visualização em todos os modos.
+  A paleta principal continua a mesma; `--accent-ink` é a variação escura para texto laranja legível.
+- **Navegação e zoom**: anterior/próxima e contadores acompanham eventos de páginas. O zoom usa a escala
+  real do pdf.js (75–200% ou "Ajustar à largura", padrão), não um transform CSS. Um ResizeObserver
+  recalcula o ajuste de largura; as coordenadas dos overlays continuam em pontos PDF.
+- **Formas reintroduzidas pelo usuário**: retângulo/elipse, linha/seta e desenho livre agora estão
+  disponíveis em "Formas e desenho", com cor, espessura, preenchimento e transparência na seleção.
+  Preservar essas ferramentas, a duplicação de páginas/elementos, numeração, marca-d'água e o progresso
+  com cancelamento nas operações demoradas.
 - **Edição de texto**: inserir texto já inicia a digitação com o conteúdo selecionado. A seleção tem
   contorno discreto e uma barra flutuante com tamanho (6–144 pt), cor, editar e excluir. O texto usa
   Helvetica/Arial no preview para se aproximar da Helvetica exportada. Ctrl+Enter conclui, Esc restaura

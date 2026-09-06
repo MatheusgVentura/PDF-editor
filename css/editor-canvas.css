@@ -4,19 +4,28 @@
   min-height: 0;
 }
 
+#document-stage { display: flex; flex: 1; flex-direction: column; min-width: 0; min-height: 0; }
+.canvas-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 54px; padding: 8px 24px; border-bottom: 1px solid #dce1e5; background: #f4f6f8; }
+.page-navigation { display: flex; align-items: center; gap: 8px; color: var(--text-secondary); font-size: 12px; white-space: nowrap; }
+.page-navigation > span { min-width: 84px; text-align: center; font-variant-numeric: tabular-nums; }
+.zoom-control { display: flex; align-items: center; gap: 8px; color: var(--text-secondary); font-size: 11px; }
+.zoom-control select { max-width: 150px; border: 1px solid var(--border); border-radius: 6px; padding: 6px 8px; background: var(--surface); font-size: 12px; color: var(--navy); }
+
 #viewport-area {
   flex: 1;
+  min-height: 0;
+  min-width: 0;
   overflow: auto;
   display: flex;
   align-items: flex-start;
-  padding: var(--space-6) var(--space-5);
+  padding: 32px;
   background: var(--bg);
 }
 
 #page-viewport {
   position: relative;
   background: #fff;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 0 0 1px var(--border);
+  box-shadow: 0 4px 20px #33464d10, 0 0 0 1px #33464d0d;
   flex-shrink: 0;
   /* margin:auto (em vez de justify-content:center no pai) centraliza a
      página quando ela cabe, mas não a corta quando é mais larga que a
@@ -169,32 +178,35 @@
   .text-toolbar { gap: 4px; }
   .text-toolbar-label span { display: none; }
 }
-@media (max-width: 800px) {
-  #workspace:has(#overlay-layer.active) {
+@media (max-width: 900px) {
+  #workspace {
     display: grid;
-    grid-template-columns: 88px minmax(0, 1fr);
+    grid-template-columns: 128px minmax(0, 1fr);
     grid-template-rows: minmax(0, 1fr) auto;
   }
-  #workspace:has(#overlay-layer.active) #thumbnail-strip {
-    width: auto;
-    padding: 8px;
-  }
-  #workspace:has(#overlay-layer.active) .thumb-canvas-wrap canvas {
-    height: auto;
-  }
-  #workspace:has(#overlay-layer.active) #viewport-area {
-    min-width: 0;
+  #workspace #viewport-area {
     padding: 24px 16px;
   }
-  #workspace:has(#overlay-layer.active) #side-panel {
+  #workspace #side-panel {
     grid-column: 1 / -1;
     width: auto;
-    max-height: 180px;
+    max-height: 240px;
     border-left: 0;
     border-top: 1px solid var(--border);
-    padding: 12px 16px;
+    padding: 18px;
   }
-  #workspace:has(#overlay-layer.active) .panel-section { margin-bottom: 12px; }
+  .canvas-toolbar { padding-inline: 10px; gap: 4px; }
+  .zoom-control > span { display: none; }
+  .panel-heading { margin-bottom: 16px; }
+  .tool-grid { max-width: 420px; }
+}
+@media (max-width: 560px) {
+  #workspace { grid-template-columns: 88px minmax(0, 1fr); }
+  .page-navigation { gap: 0; font-size: 10px; }
+  .page-navigation > span { min-width: 66px; }
+  .page-navigation .icon-btn { width: 24px; }
+  .zoom-control select { max-width: 93px; padding: 6px 2px; font-size: 10px; }
+  #workspace #side-panel { max-height: 210px; }
 }
 
 .overlay-item.overlay-image img {

@@ -1,85 +1,35 @@
-#thumbnail-strip {
-  width: 168px;
-  flex-shrink: 0;
-  background: var(--surface);
-  border-right: 1px solid var(--border);
-  overflow-y: auto;
-  padding: var(--space-3);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
+#pages-panel { display: flex; flex-direction: column; width: 184px; min-height: 0; flex-shrink: 0; border-right: 1px solid var(--border); background: #fafbfc; }
+.pages-heading { display: flex; align-items: center; justify-content: space-between; min-height: 54px; padding: 16px 18px; border-bottom: 1px solid var(--border); background: var(--surface); }
+.pages-heading h2 { margin: 0; color: var(--navy); font-size: 12px; font-weight: 600; }
+.count-badge { display: grid; place-items: center; min-width: 24px; height: 22px; padding: 0 6px; border-radius: 6px; background: var(--surface-soft); color: var(--text-secondary); font-size: 11px; font-variant-numeric: tabular-nums; }
+#thumbnail-strip { display: flex; flex-direction: column; gap: 18px; flex: 1; min-height: 0; overflow-y: auto; padding: 18px 14px; }
+.pages-hint { padding: 12px 8px; border-top: 1px solid var(--border); color: var(--text-secondary); font-size: 10px; text-align: center; }
+.thumb-tile { position: relative; flex-shrink: 0; padding: 8px; border: 1px solid transparent; border-radius: 10px; background: transparent; cursor: pointer; transition: border-color 140ms ease, background 140ms ease; }
+.thumb-tile:hover { background: #eff3f5; }
+.thumb-tile.active { border-color: #ffc499; background: #fff3ea; }
+.thumb-tile.dragging { opacity: .45; }
+.thumb-tile.drop-target { border-color: var(--accent); }
+.thumb-canvas-wrap { position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; border-radius: 3px; background: #fff; box-shadow: 0 2px 5px #33464d0d, 0 0 0 1px #33464d18; }
+.thumb-canvas-wrap canvas { display: block; width: 100%; height: auto; }
+.thumb-select { position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; margin: 0; z-index: 2; cursor: pointer; }
+.thumb-footer { display: flex; flex-direction: column; align-items: stretch; gap: 6px; margin-top: 9px; }
+.thumb-index { color: var(--text-secondary); font-size: 11px; font-weight: 500; text-align: center; }
+.thumb-tile.active .thumb-index { color: var(--accent-ink); }
+.thumb-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 1px; }
+.thumb-actions .icon-btn { width: 24px; height: 26px; }
+.thumb-actions .icon { width: 13px; height: 13px; }
+@media (max-width: 900px) {
+  #pages-panel { width: auto; }
+  #thumbnail-strip { padding: 12px 8px; gap: 12px; }
+  .pages-heading { padding: 16px 10px; }
 }
-
-.thumb-tile {
-  position: relative;
-  border: 1.5px solid transparent;
-  border-radius: var(--radius-md);
-  padding: var(--space-2);
-  background: var(--bg);
-  transition: border-color 120ms ease, background-color 120ms ease;
-}
-.thumb-tile:hover {
-  background: var(--accent-soft);
-}
-.thumb-tile.active {
-  border-color: var(--accent);
-  background: var(--accent-soft);
-}
-.thumb-tile.dragging {
-  opacity: 0.4;
-}
-.thumb-tile.drop-target {
-  border-color: var(--accent);
-}
-
-.thumb-canvas-wrap {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--radius-sm);
-  overflow: hidden;
-  background: #fff;
-  box-shadow: 0 0 0 1px var(--border);
-}
-
-.thumb-canvas-wrap canvas {
-  display: block;
-  max-width: 100%;
-}
-
-.thumb-select {
-  position: absolute;
-  top: 6px;
-  left: 6px;
-  width: 16px;
-  height: 16px;
-  z-index: 2;
-}
-
-.thumb-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: var(--space-2);
-}
-
-.thumb-index {
-  font-size: var(--text-xs);
-  color: var(--text-secondary);
-  font-weight: 500;
-}
-
-.thumb-actions {
-  display: flex;
-  gap: 2px;
-}
-
-.thumb-actions .icon-btn {
-  width: 22px;
-  height: 22px;
-}
-.thumb-actions .icon {
-  width: 13px;
-  height: 13px;
+@media (max-width: 560px) {
+  .pages-heading { flex-wrap: wrap; gap: 4px; }
+  .pages-heading h2 { font-size: 11px; }
+  .count-badge { height: 18px; min-width: 18px; padding: 0 3px; font-size: 10px; }
+  #thumbnail-strip { padding: 10px 5px; }
+  .thumb-tile { padding: 6px; }
+  .thumb-actions { gap: 0; }
+  .thumb-actions .icon-btn { width: 23px; }
+  .pages-hint { font-size: 9px; }
 }

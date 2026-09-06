@@ -41,6 +41,7 @@ export function updateActiveHighlight() {
   stripEl.querySelectorAll('.thumb-tile').forEach((tile) => {
     const idx = Number(tile.dataset.index);
     tile.classList.toggle('active', idx === editorState.activePageIndex);
+    tile.setAttribute('aria-current', idx === editorState.activePageIndex ? 'page' : 'false');
   });
 }
 
@@ -50,6 +51,10 @@ function buildTile(index, canvas) {
   const tile = document.createElement('div');
   tile.className = 'thumb-tile';
   tile.dataset.index = String(index);
+  tile.tabIndex = 0;
+  tile.setAttribute('role', 'group');
+  tile.setAttribute('aria-label', `Página ${index + 1}`);
+  tile.setAttribute('aria-current', index === editorState.activePageIndex ? 'page' : 'false');
   if (index === editorState.activePageIndex) tile.classList.add('active');
   tile.draggable = isOrganize;
 
@@ -57,6 +62,7 @@ function buildTile(index, canvas) {
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
     checkbox.className = 'thumb-select';
+    checkbox.setAttribute('aria-label', `Selecionar página ${index + 1}`);
     checkbox.checked = editorState.selectedPageIndices.has(index);
     checkbox.addEventListener('click', (e) => e.stopPropagation());
     checkbox.addEventListener('change', () => {
@@ -90,6 +96,7 @@ function buildTile(index, canvas) {
       <button class="icon-btn" data-action="rotate-right" title="Girar para direita">${icons.rotateRight}</button>
       <button class="icon-btn danger" data-action="delete" title="Excluir página">${icons.trash}</button>
     `;
+    actions.querySelectorAll('button').forEach((button) => button.setAttribute('aria-label', button.title));
     actions.querySelector('[data-action="duplicate"]').addEventListener('click', async (e) => {
       e.stopPropagation();
       await duplicatePage(index);
@@ -127,6 +134,12 @@ function buildTile(index, canvas) {
 
   tile.addEventListener('click', () => {
     editorState.setActivePage(index);
+  });
+  tile.addEventListener('keydown', (e) => {
+    if (e.target === tile && (e.key === 'Enter' || e.key === ' ')) {
+      e.preventDefault();
+      editorState.setActivePage(index);
+    }
   });
 
   if (isOrganize) {
