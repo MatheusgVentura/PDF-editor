@@ -61,6 +61,13 @@ function buildElement(overlay, viewport) {
   el.addEventListener('pointerdown', (e) => {
     if (e.target.closest('.overlay-handle') || e.target.closest('.overlay-delete')) return;
     if (el.isContentEditable && document.activeElement === el) return;
+    // Se o item ja esta selecionado, evita reconstruir o layer: manter o
+    // mesmo no DOM entre os dois cliques e o que permite o navegador
+    // reconhecer um duplo clique (dblclick exige o mesmo elemento-alvo).
+    if (overlay.id === selectedId) {
+      startDrag(e, overlay, viewport, el);
+      return;
+    }
     selectOverlay(overlay.id);
     // selectOverlay() reconstroi o layer inteiro (innerHTML = ''), entao `el`
     // ja esta desconectado do DOM neste ponto — precisamos do elemento novo
@@ -94,6 +101,11 @@ function renderContent(el, overlay, viewport) {
 }
 
 function enterTextEditMode(el, overlay) {
+  // O botao de excluir e a alca de redimensionar sao filhos do proprio
+  // elemento (para posicionamento absoluto relativo a ele). Se ficarem
+  // no DOM durante a edicao, contentEditable os trata como texto e o
+  // "x" do botao acaba sendo salvo junto do conteudo digitado.
+  el.querySelectorAll('.overlay-delete, .overlay-handle').forEach((n) => n.remove());
   el.contentEditable = 'true';
   el.focus();
   const range = document.createRange();

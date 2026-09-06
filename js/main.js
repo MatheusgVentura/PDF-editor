@@ -16,7 +16,6 @@ import { renderOrganizePanel } from './organize/organize-panel.js';
 import { renderFormsPanel } from './forms/form-render.js';
 import { addTextOverlay } from './content-editor/tools/text-tool.js';
 import { addImageOverlay } from './content-editor/tools/image-tool.js';
-import { addShapeOverlay } from './content-editor/tools/shape-tool.js';
 import { openSignaturePad } from './content-editor/tools/signature-tool.js';
 import { exportPageAsPng, exportAllPagesAsPng } from './export/export-images.js';
 import { extractAllText } from './export/export-text.js';
@@ -138,10 +137,6 @@ function renderContentPanel(container) {
         <button class="btn btn-ghost" id="tool-image">${icons.image} Imagem</button>
       </div>
       <div class="panel-row">
-        <button class="btn btn-ghost" id="tool-rect">${icons.square} Retangulo</button>
-        <button class="btn btn-ghost" id="tool-ellipse">${icons.circle} Elipse</button>
-      </div>
-      <div class="panel-row">
         <button class="btn btn-ghost" id="tool-signature">${icons.signature} Assinatura</button>
       </div>
     </div>
@@ -156,8 +151,6 @@ function renderContentPanel(container) {
 
   document.getElementById('tool-text').addEventListener('click', addTextOverlay);
   document.getElementById('tool-image').addEventListener('click', () => addImageOverlay(els.fileInputImage));
-  document.getElementById('tool-rect').addEventListener('click', () => addShapeOverlay('rect'));
-  document.getElementById('tool-ellipse').addEventListener('click', () => addShapeOverlay('ellipse'));
   document.getElementById('tool-signature').addEventListener('click', openSignaturePad);
 }
 
