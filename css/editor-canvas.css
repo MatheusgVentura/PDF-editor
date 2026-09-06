@@ -19,9 +19,9 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 0 0 1px var(--border);
   flex-shrink: 0;
   /* margin:auto (em vez de justify-content:center no pai) centraliza a
-     pagina quando ela cabe, mas nao a corta quando e mais larga que a
-     area visivel (ex.: pagina landscape ou girada 90/270) - nesse caso
-     ela fica alinhada ao inicio e acessivel via scroll horizontal. */
+     página quando ela cabe, mas não a corta quando é mais larga que a
+     área visível (ex.: página landscape ou girada 90/270) - nesse caso
+     ela fica alinhada ao início e acessível via scroll horizontal. */
   margin: 0 auto;
 }
 
@@ -93,7 +93,7 @@
   visibility: hidden;
 }
 
-/* A barra fica fora do texto editavel e nunca entra no PDF exportado. */
+/* A barra fica fora do texto editável e nunca entra no PDF exportado. */
 .text-toolbar {
   position: absolute;
   z-index: 10;
@@ -214,6 +214,18 @@
 }
 .overlay-item.overlay-ellipse {
   border-radius: 50%;
+}
+
+.overlay-item.overlay-watermark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.overlay-watermark-content {
+  pointer-events: none;
+  white-space: nowrap;
+  font-family: Helvetica, Arial, sans-serif;
+  font-weight: 700;
 }
 
 .overlay-handle {

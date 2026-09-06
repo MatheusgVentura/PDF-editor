@@ -1,4 +1,4 @@
-import { PDFDocument, rgb, StandardFonts } from '../../vendor/pdf-lib/pdf-lib.esm.min.js';
+import { PDFDocument, rgb, degrees, StandardFonts } from '../../vendor/pdf-lib/pdf-lib.esm.min.js';
 
 const FONT_ASCENT_RATIO = 0.8;
 
@@ -74,6 +74,33 @@ export async function bakeOverlaysIntoDoc(pdfDoc, pagesData) {
             borderColor: toRgbColor(overlay.strokeColor),
             borderWidth: overlay.lineWidth,
             ...(overlay.fillColor ? { color: toRgbColor(overlay.fillColor) } : {})
+          });
+          break;
+        }
+        case 'watermark': {
+          // pdf-lib gira o texto em torno do ponto (x, y) da base do texto, não
+          // do centro da caixa. Para o texto ficar centralizado na página após
+          // girar (igual ao preview), calculamos o ponto de ancoragem a partir
+          // do centro da caixa e do ângulo, usando a largura real da fonte.
+          const angleDeg = overlay.rotation || 0;
+          const angleRad = (angleDeg * Math.PI) / 180;
+          const textWidth = helvetica.widthOfTextAtSize(overlay.text || '', overlay.fontSize);
+          const halfAscent = (overlay.fontSize * FONT_ASCENT_RATIO) / 2;
+          const centerX = overlay.x + overlay.width / 2;
+          const centerY = overlay.y - overlay.height / 2;
+          const cos = Math.cos(angleRad);
+          const sin = Math.sin(angleRad);
+          const localOffsetX = textWidth / 2;
+          const anchorX = centerX - (localOffsetX * cos - halfAscent * sin);
+          const anchorY = centerY - (localOffsetX * sin + halfAscent * cos);
+          page.drawText(overlay.text || '', {
+            x: anchorX,
+            y: anchorY,
+            size: overlay.fontSize,
+            font: helvetica,
+            color: toRgbColor(overlay.color),
+            opacity: overlay.opacity,
+            rotate: degrees(angleDeg)
           });
           break;
         }

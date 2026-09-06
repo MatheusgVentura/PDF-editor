@@ -41,10 +41,12 @@ function cloneColor(c) {
 }
 
 // Dados de um overlay prontos para virar um novo overlay independente: sem
-// id (createOverlay gera um novo) e com os objetos de cor copiados por
-// valor, para dois overlays nunca compartilharem a mesma referencia.
+// id (createOverlay gera um novo), sem "source" (uma cópia manual de um
+// número de página/marca-d'água vira um texto solto, que "Aplicar" de novo
+// não deve apagar) e com os objetos de cor copiados por valor, para dois
+// overlays nunca compartilharem a mesma referência.
 function overlayDataWithoutId(overlay) {
-  const { id, ...rest } = overlay;
+  const { id, source, ...rest } = overlay;
   return {
     ...rest,
     color: cloneColor(rest.color),
@@ -71,6 +73,16 @@ export function pasteOverlayFromClipboard(pageIndex) {
   data.x += PASTE_OFFSET;
   data.y -= PASTE_OFFSET;
   return createOverlay(pageIndex, data);
+}
+
+// Remove overlays gerados em lote (numeração de páginas, marca-d'água) antes
+// de reaplicar, para reaplicar não empilhar cópias a cada clique em "Aplicar".
+export function removeOverlaysBySource(source) {
+  editorState.pages.forEach((page) => {
+    page.overlays = page.overlays.filter((o) => o.source !== source);
+  });
+  editorState.markDirty();
+  editorState.emit('overlays-changed');
 }
 
 export function duplicateOverlay(pageIndex, id) {

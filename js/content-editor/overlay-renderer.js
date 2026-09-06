@@ -88,7 +88,7 @@ function buildElement(overlay, viewport) {
   el.addEventListener('pointerdown', (e) => {
     if (e.target.closest('.overlay-handle') || e.target.closest('.overlay-delete')) return;
     if (e.target.isContentEditable) return;
-    // Se o item ja esta selecionado, evita reconstruir o layer: manter o
+    // Se o item já está selecionado, evita reconstruir o layer: manter o
     // mesmo no DOM entre os dois cliques e o que permite o navegador
     // reconhecer um duplo clique (dblclick exige o mesmo elemento-alvo).
     if (overlay.id === selectedId) {
@@ -133,6 +133,17 @@ function renderContent(el, overlay, viewport) {
   } else if (overlay.type === 'rect' || overlay.type === 'ellipse') {
     el.style.border = `${Math.max(1, overlay.lineWidth * viewport.scale)}px solid ${colorToCss(overlay.strokeColor)}`;
     el.style.background = overlay.fillColor ? colorToCss(overlay.fillColor) : 'transparent';
+  } else if (overlay.type === 'watermark') {
+    // A rotação fica no filho, não no `el`: assim a caixa de seleção e os
+    // botoes de excluir/duplicar/redimensionar continuam alinhados aos eixos.
+    const content = document.createElement('div');
+    content.className = 'overlay-watermark-content';
+    content.textContent = overlay.text || '';
+    content.style.fontSize = `${overlay.fontSize * viewport.scale}px`;
+    content.style.color = colorToCss(overlay.color);
+    content.style.opacity = String(overlay.opacity);
+    content.style.transform = `rotate(${-overlay.rotation}deg)`;
+    el.appendChild(content);
   }
 }
 
@@ -179,7 +190,7 @@ function enterTextEditMode(el, overlay) {
       left: parseFloat(el.style.left), top: parseFloat(el.style.top),
       width: parseFloat(el.style.width), height: parseFloat(el.style.height)
     });
-    // O blur pode vir de um clique na barra: nao remova seu alvo antes do click.
+    // O blur pode vir de um clique na barra: não remova seu alvo antes do click.
     committingText = true;
     try { updateOverlay(pageIndex, overlay.id, { text, ...box }); }
     finally { committingText = false; }
@@ -378,8 +389,8 @@ layer.addEventListener('pointerdown', (e) => {
   }
 });
 
-// Copiar/colar/duplicar entre paginas. So atua fora de campos editaveis
-// (input da barra, texto em edicao) para nao atropelar o clipboard nativo.
+// Copiar/colar/duplicar entre páginas. Só atua fora de campos editáveis
+// (input da barra, texto em edição) para não atropelar o clipboard nativo.
 document.addEventListener('keydown', (e) => {
   if (editorState.mode !== 'content') return;
   if (!(e.ctrlKey || e.metaKey)) return;

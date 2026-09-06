@@ -1,4 +1,4 @@
-// Pequeno set de icones de linha (SVG inline), sem dependencia externa.
+// Pequeno set de ícones de linha (SVG inline), sem dependência externa.
 export const icons = {
   rotateLeft: '<svg class="icon" viewBox="0 0 24 24"><path d="M9 4 5 8l4 4"/><path d="M5 8h9a6 6 0 1 1-4.2 10.2"/></svg>',
   rotateRight: '<svg class="icon" viewBox="0 0 24 24"><path d="m15 4 4 4-4 4"/><path d="M19 8h-9a6 6 0 1 0 4.2 10.2"/></svg>',
@@ -12,5 +12,7 @@ export const icons = {
   download: '<svg class="icon" viewBox="0 0 24 24"><path d="M12 3v12m0 0-4-4m4 4 4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>',
   close: '<svg class="icon" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg>',
   duplicate: '<svg class="icon" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>',
-  filePlus: '<svg class="icon" viewBox="0 0 24 24"><path d="M13 3H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V8z"/><path d="M13 3v5h5"/><path d="M12 12v6M9 15h6"/></svg>'
+  filePlus: '<svg class="icon" viewBox="0 0 24 24"><path d="M13 3H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V8z"/><path d="M13 3v5h5"/><path d="M12 12v6M9 15h6"/></svg>',
+  hash: '<svg class="icon" viewBox="0 0 24 24"><path d="M9 4 7 20M17 4l-2 16M4 9h16M3 15h16"/></svg>',
+  droplet: '<svg class="icon" viewBox="0 0 24 24"><path d="M12 3s6 6.5 6 11a6 6 0 1 1-12 0c0-4.5 6-11 6-11Z"/></svg>'
 };
