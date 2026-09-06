@@ -6,9 +6,11 @@
   --text-primary: #1a1a1a;
   --text-secondary: #6b7280;
   --text-faint: #9ca3af;
-  --accent: #4f46e5;
-  --accent-hover: #4338ca;
-  --accent-soft: #eef2ff;
+  --accent: #fe6400;
+  --accent-hover: #e35700;
+  --accent-soft: #fff1e6;
+  --navy: #33464d;
+  --navy-hover: #435b64;
   --danger: #dc2626;
   --danger-soft: #fef2f2;
   --success: #16a34a;
