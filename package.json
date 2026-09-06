@@ -6,9 +6,9 @@
   "scripts": {
     "start": "node server.js"
   },
-  "license": "ISC",
+  "license": "MIT",
   "type": "commonjs",
-  "dependencies": {
+  "devDependencies": {
     "pdf-lib": "^1.17.1",
     "pdfjs-dist": "^6.3.289"
   }

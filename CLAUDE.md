@@ -33,8 +33,9 @@ sem passo de build. `index.html` carrega `js/main.js` com `type="module"`.
 
 **Vendoring**: `vendor/pdfjs/` e `vendor/pdf-lib/` contêm bundles de browser pré-compilados, commitados
 diretamente no repo (não gerados a partir de `node_modules` — não existe script de cópia). Todo código do app
-importa desses caminhos relativos (`../../vendor/...`). As dependências `pdf-lib`/`pdfjs-dist` em
-`package.json`/`node_modules` não são usadas pelo runtime do app.
+importa desses caminhos relativos (`../../vendor/...`). `pdf-lib`/`pdfjs-dist` em `package.json` ficam em
+`devDependencies` só de apoio para scripts locais (ex.: gerar um PDF de teste rápido em Node) — não são usadas
+pelo runtime do app, que depende só de `vendor/`.
 
 **Estado central** (`js/core/state.js`): uma única instância `editorState` (EventTarget) compartilhada por todos
 os módulos. Guarda `pdfLibDoc` (documento pdf-lib, fonte da verdade para mutações estruturais — girar, excluir,
@@ -95,9 +96,6 @@ Os controles de estilo ficam na barra flutuante do elemento selecionado.
   `.overlay-text-content` com `contenteditable="plaintext-only"`; a barra é irmã do overlay, portanto
   controles nunca entram no texto salvo. O commit no blur atualiza o model sem reconstruir o DOM,
   preservando o botão da barra que está recebendo o clique. Quebras de linha são lidas com `innerText`.
-- **Screenshots do README removidos temporariamente**: existiam em `docs/screenshots/` referenciados no
-  README, mas foram tirados das seções de funcionalidades a pedido do usuário até a UI passar por uma
-  "polida" visual — os arquivos continuam no repo para serem reaproveitados depois.
 - Limitações conhecidas do produto (PDFs com senha, sem OCR, overlay não edita texto pré-existente, export de
   imagens sem zip, fidelidade de formulários em reorder/extract/split) estão documentadas no README e ainda
   valem.
