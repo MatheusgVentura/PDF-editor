@@ -49,17 +49,156 @@
 }
 
 .overlay-item.overlay-text {
-  display: flex;
-  align-items: flex-start;
+  border: 0;
+  border-radius: 2px;
+  font-family: Helvetica, Arial, sans-serif;
   white-space: pre-wrap;
   word-break: break-word;
   min-width: 20px;
   min-height: 1em;
+  outline: 1px solid transparent;
+  outline-offset: 5px;
 }
-.overlay-item.overlay-text[contenteditable="true"] {
+.overlay-text:hover:not(.selected) {
+  outline-color: var(--border-strong);
+}
+.overlay-item.overlay-text.selected {
+  outline-color: var(--accent);
+}
+.overlay-item.overlay-text.editing {
+  outline-color: var(--navy);
+}
+.overlay-text-content {
+  min-height: 1.15em;
+  width: 100%;
+}
+.overlay-text-content[contenteditable="plaintext-only"] {
   cursor: text;
   outline: none;
-  background: rgba(79, 70, 229, 0.04);
+  caret-color: var(--accent-hover);
+}
+.overlay-text-content::selection {
+  background: #ffdfc9;
+}
+.overlay-text > .overlay-handle {
+  right: -10px;
+  bottom: -10px;
+  width: 10px;
+  height: 10px;
+  border: 1.5px solid var(--accent);
+  background: var(--surface);
+  border-radius: 3px;
+}
+.overlay-text.editing > .overlay-handle {
+  visibility: hidden;
+}
+
+/* A barra fica fora do texto editavel e nunca entra no PDF exportado. */
+.text-toolbar {
+  position: absolute;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: calc(100% - 16px);
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--text-primary);
+  box-shadow: 0 4px 16px rgba(51, 70, 77, 0.12), 0 1px 3px rgba(51, 70, 77, 0.06);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  line-height: 1;
+  white-space: nowrap;
+  pointer-events: auto;
+}
+.text-toolbar-label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 4px;
+  font-weight: 600;
+  color: var(--navy);
+}
+.text-size-control {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  height: 30px;
+  padding: 0 6px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  color: var(--text-secondary);
+}
+.text-size-control input {
+  width: 42px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+.text-color-control {
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  padding: 4px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: var(--surface);
+  cursor: pointer;
+}
+.text-color-control::-webkit-color-swatch-wrapper { padding: 0; }
+.text-color-control::-webkit-color-swatch { border: 0; border-radius: 3px; }
+.text-color-control::-moz-color-swatch { border: 0; border-radius: 3px; }
+.text-toolbar-divider { width: 1px; height: 20px; background: var(--border); }
+.text-edit-button {
+  height: 30px;
+  padding: 0 9px;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--navy);
+  font-weight: 600;
+}
+.text-edit-button:hover { background: var(--accent-soft); }
+.text-toolbar .icon-btn { width: 30px; height: 30px; flex-shrink: 0; }
+.text-toolbar :is(button, input):focus-visible,
+.overlay-text:focus-visible {
+  outline: 2px solid var(--navy);
+  outline-offset: 3px;
+}
+@media (max-width: 600px) {
+  .text-toolbar { gap: 4px; }
+  .text-toolbar-label span { display: none; }
+}
+@media (max-width: 800px) {
+  #workspace:has(#overlay-layer.active) {
+    display: grid;
+    grid-template-columns: 88px minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) auto;
+  }
+  #workspace:has(#overlay-layer.active) #thumbnail-strip {
+    width: auto;
+    padding: 8px;
+  }
+  #workspace:has(#overlay-layer.active) .thumb-canvas-wrap canvas {
+    height: auto;
+  }
+  #workspace:has(#overlay-layer.active) #viewport-area {
+    min-width: 0;
+    padding: 24px 16px;
+  }
+  #workspace:has(#overlay-layer.active) #side-panel {
+    grid-column: 1 / -1;
+    width: auto;
+    max-height: 180px;
+    border-left: 0;
+    border-top: 1px solid var(--border);
+    padding: 12px 16px;
+  }
+  #workspace:has(#overlay-layer.active) .panel-section { margin-bottom: 12px; }
 }
 
 .overlay-item.overlay-image img {

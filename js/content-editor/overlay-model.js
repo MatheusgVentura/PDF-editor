@@ -31,3 +31,7 @@ export function getOverlaysForPage(pageIndex) {
   const page = editorState.pages[pageIndex];
   return page ? page.overlays : [];
 }
+
+export function cloneOverlay(overlay) {
+  return { ...overlay, id: `ov-${nextId++}` };
+}

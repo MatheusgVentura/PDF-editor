@@ -78,13 +78,15 @@ existem no model, no renderer e no bake, mas **não têm botão na UI hoje** —
   servem para nada por enquanto" — só voltam quando existir uma aba dedicada de "Formas Geométricas" com opção
   de cor. Não remover `shape-tool.js` nem o suporte a `rect`/`ellipse` em `overlay-renderer.js`/`bake.js`, eles
   ficam prontos para quando essa aba for construída.
-- **Bug corrigido — duplo clique não editava texto**: em `overlay-renderer.js`, o `pointerdown` de um overlay
-  chamava `selectOverlay()` mesmo quando o item já estava selecionado, o que reconstruía `#overlay-layer`
-  inteiro (`innerHTML = ''`) a cada clique. Isso trocava o nó DOM entre os dois cliques de um duplo clique, e o
-  navegador só dispara `dblclick` quando os dois cliques acontecem no mesmo elemento — então o evento nunca
-  disparava. A correção pula a reconstrução quando `overlay.id === selectedId`. De brinde, o botão de excluir
-  (que é filho do próprio `<div>` de texto, para posicionamento absoluto) agora é removido do DOM antes de
-  ativar `contentEditable`, evitando que o "×" dele interfira na edição.
+- **Edição de texto**: inserir texto já inicia a digitação com o conteúdo selecionado. A seleção tem
+  contorno discreto e uma barra flutuante com tamanho (6–144 pt), cor, editar e excluir. O texto usa
+  Helvetica/Arial no preview para se aproximar da Helvetica exportada. Ctrl+Enter conclui, Esc restaura
+  a edição atual e clicar fora confirma. Em telas estreitas, o painel de conteúdo fica abaixo da página.
+- **Preservar o duplo clique**: `selectOverlay()` atualiza seleção e controles sem substituir os elementos
+  dos overlays; reconstruir o DOM entre cliques impede o `dblclick` real do navegador. A digitação usa
+  `.overlay-text-content` com `contenteditable="plaintext-only"`; a barra é irmã do overlay, portanto
+  controles nunca entram no texto salvo. O commit no blur atualiza o model sem reconstruir o DOM,
+  preservando o botão da barra que está recebendo o clique. Quebras de linha são lidas com `innerText`.
 - **Screenshots do README removidos temporariamente**: existiam em `docs/screenshots/` referenciados no
   README, mas foram tirados das seções de funcionalidades a pedido do usuário até a UI passar por uma
   "polida" visual — os arquivos continuam no repo para serem reaproveitados depois.

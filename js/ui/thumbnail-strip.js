@@ -2,7 +2,7 @@ import { editorState } from '../core/state.js';
 import { renderThumbnail } from '../core/pdf-engine.js';
 import { icons } from './icons.js';
 import { confirmDialog } from './modal.js';
-import { rotatePage, deletePage, reorderPages } from '../organize/organize-actions.js';
+import { rotatePage, deletePage, reorderPages, duplicatePage, insertBlankPage } from '../organize/organize-actions.js';
 import { showError } from './toast.js';
 
 const stripEl = document.getElementById('thumbnail-strip');
@@ -84,10 +84,20 @@ function buildTile(index, canvas) {
     const actions = document.createElement('div');
     actions.className = 'thumb-actions';
     actions.innerHTML = `
+      <button class="icon-btn" data-action="duplicate" title="Duplicar pagina">${icons.duplicate}</button>
+      <button class="icon-btn" data-action="insert-blank" title="Inserir pagina em branco depois">${icons.filePlus}</button>
       <button class="icon-btn" data-action="rotate-left" title="Girar para esquerda">${icons.rotateLeft}</button>
       <button class="icon-btn" data-action="rotate-right" title="Girar para direita">${icons.rotateRight}</button>
       <button class="icon-btn danger" data-action="delete" title="Excluir pagina">${icons.trash}</button>
     `;
+    actions.querySelector('[data-action="duplicate"]').addEventListener('click', async (e) => {
+      e.stopPropagation();
+      await duplicatePage(index);
+    });
+    actions.querySelector('[data-action="insert-blank"]').addEventListener('click', async (e) => {
+      e.stopPropagation();
+      await insertBlankPage(index);
+    });
     actions.querySelector('[data-action="rotate-left"]').addEventListener('click', async (e) => {
       e.stopPropagation();
       await rotatePage(index, -90);

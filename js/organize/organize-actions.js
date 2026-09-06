@@ -2,11 +2,36 @@ import { PDFDocument, degrees } from '../../vendor/pdf-lib/pdf-lib.esm.min.js';
 import { editorState } from '../core/state.js';
 import { resyncPdfjsFromPdfLib } from '../core/pdf-engine.js';
 import { showError, showSuccess } from '../ui/toast.js';
+import { cloneOverlay } from '../content-editor/overlay-model.js';
 
 async function afterMutation() {
   editorState.pdfjsDoc = await resyncPdfjsFromPdfLib(editorState.pdfLibDoc);
   editorState.markDirty();
   editorState.emit('pages-changed');
+}
+
+// Insere a metadata de uma nova pagina (overlays) logo apos `index` e ajusta
+// selecao/pagina ativa para continuar apontando para as mesmas paginas logicas.
+function insertPageMetaAfter(index, overlays) {
+  editorState.pages.splice(index + 1, 0, { overlays });
+  editorState.selectedPageIndices = new Set(
+    Array.from(editorState.selectedPageIndices).map((i) => (i > index ? i + 1 : i))
+  );
+  if (editorState.activePageIndex > index) editorState.activePageIndex += 1;
+}
+
+export async function duplicatePage(index) {
+  const [copiedPage] = await editorState.pdfLibDoc.copyPages(editorState.pdfLibDoc, [index]);
+  editorState.pdfLibDoc.insertPage(index + 1, copiedPage);
+  insertPageMetaAfter(index, editorState.pages[index].overlays.map(cloneOverlay));
+  await afterMutation();
+}
+
+export async function insertBlankPage(index) {
+  const { width, height } = editorState.pdfLibDoc.getPage(index).getSize();
+  editorState.pdfLibDoc.insertPage(index + 1, [width, height]);
+  insertPageMetaAfter(index, []);
+  await afterMutation();
 }
 
 export async function rotatePage(index, deltaDegrees) {

@@ -142,9 +142,13 @@ function renderContentPanel(container) {
     </div>
     <div class="panel-section">
       <p class="panel-note">
-        Clique num item para adiciona-lo ao centro da pagina, depois arraste para posicionar
-        e use a alca no canto para redimensionar. De um duplo clique num texto para edita-lo.
-        Isso adiciona conteudo novo por cima do PDF — nao edita o texto ja existente no documento.
+        Adicione um texto e comece a digitar. Use a barra sobre a seleção para ajustar tamanho e cor.
+        Clique fora para concluir ou dê um duplo clique para editar novamente.
+      </p>
+      <p class="panel-note">
+        Arraste para posicionar e use a alça no canto para redimensionar.
+        Ctrl+Enter conclui a digitação; Esc cancela a edição atual.
+        O conteúdo é adicionado sobre o PDF, sem alterar o texto original.
       </p>
     </div>
   `;
