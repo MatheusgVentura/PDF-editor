@@ -243,12 +243,26 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  border: 0;
+  outline: 1px solid transparent;
+  outline-offset: 5px;
+}
+.overlay-watermark:hover:not(.selected) {
+  outline-color: var(--border-strong);
+}
+.overlay-item.overlay-watermark.selected {
+  outline-color: var(--accent);
 }
 .overlay-watermark-content {
   pointer-events: none;
   white-space: nowrap;
   font-family: Helvetica, Arial, sans-serif;
   font-weight: 700;
+}
+.overlay-watermark > .overlay-handle {
+  border: 1.5px solid var(--accent);
+  background: var(--surface);
+  border-radius: 3px;
 }
 
 .overlay-handle {

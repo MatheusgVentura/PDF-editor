@@ -43,7 +43,6 @@
 /* Start screen */
 #empty-state { flex: 1; min-height: 0; overflow-y: auto; display: flex; background: #f7f9fa; padding: 52px 24px 32px; }
 .empty-hero { width: 100%; max-width: 880px; margin: auto; text-align: center; }
-.eyebrow { display: inline-block; margin-bottom: 18px; color: var(--accent-ink); font-size: 11px; font-weight: 700; letter-spacing: 2px; }
 .empty-hero h1 { margin: 0 0 18px; color: var(--navy); font-size: clamp(32px, 3.7vw, 48px); font-weight: 650; letter-spacing: -1.8px; line-height: 1.15; }
 .empty-hero h1 span { font-weight: 400; }
 .empty-subtitle { margin: 0 0 32px; color: var(--text-secondary); font-size: 15px; line-height: 1.75; }

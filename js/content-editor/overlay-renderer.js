@@ -23,6 +23,13 @@ function isShapeType(type) {
   return SHAPE_TYPES.includes(type);
 }
 
+// Texto, formas e marca-d'água têm barra flutuante própria com seus controles
+// (tamanho, cor, opacidade...); os demais tipos usam os botões genéricos de
+// excluir/duplicar no canto da caixa.
+function hasOwnToolbar(type) {
+  return type === 'text' || type === 'watermark' || isShapeType(type);
+}
+
 function colorToCss(c) {
   if (!c) return 'transparent';
   return `rgb(${Math.round(c.r * 255)}, ${Math.round(c.g * 255)}, ${Math.round(c.b * 255)})`;
@@ -80,6 +87,7 @@ export function renderOverlays() {
   });
   const selected = overlays.find((overlay) => overlay.id === selectedId);
   if (selected?.type === 'text') addTextToolbar(selected, viewport);
+  else if (selected?.type === 'watermark') addWatermarkToolbar(selected, viewport);
   else if (selected && isShapeType(selected.type)) addShapeToolbar(selected, viewport);
 }
 
@@ -100,7 +108,7 @@ function buildElement(overlay, viewport) {
   renderContent(el, overlay, viewport);
 
   if (overlay.id === selectedId) {
-    if (overlay.type !== 'text' && !isShapeType(overlay.type)) {
+    if (!hasOwnToolbar(overlay.type)) {
       addDeleteButton(el, overlay);
       addDuplicateButton(el, overlay);
     }
@@ -333,6 +341,8 @@ export function editSelectedText() {
 function addSelectionControls(el, overlay, viewport) {
   if (overlay.type === 'text') {
     addTextToolbar(overlay, viewport);
+  } else if (overlay.type === 'watermark') {
+    addWatermarkToolbar(overlay, viewport);
   } else if (isShapeType(overlay.type)) {
     addShapeToolbar(overlay, viewport);
   } else {
@@ -473,6 +483,62 @@ function addShapeToolbar(overlay, viewport) {
     duplicateSelected(editorState.activePageIndex, overlay.id);
   });
   toolbar.querySelector('[aria-label="Excluir forma"]').addEventListener('click', () => {
+    selectedId = null;
+    removeOverlay(editorState.activePageIndex, overlay.id);
+  });
+
+  layer.appendChild(toolbar);
+  positionTextToolbar(screenBoxFromPdf(viewport, overlay));
+}
+
+function addWatermarkToolbar(overlay, viewport) {
+  const toolbar = document.createElement('div');
+  toolbar.className = 'text-toolbar';
+  toolbar.setAttribute('role', 'group');
+  toolbar.setAttribute('aria-label', 'Propriedades da marca-d\'água');
+  toolbar.innerHTML = `
+    <span class="text-toolbar-label">${icons.droplet}<span>Marca-d'água</span></span>
+    <label class="text-size-control" title="Tamanho da fonte"><input type="number" min="10" max="200" step="1" aria-label="Tamanho da fonte" /><span>pt</span></label>
+    <input class="text-color-control" type="color" aria-label="Cor da marca-d'água" title="Cor da marca-d'água" />
+    <span class="text-toolbar-divider" aria-hidden="true"></span>
+    <label class="text-size-control" title="Opacidade"><input type="number" min="5" max="100" step="5" aria-label="Opacidade" /><span>%</span></label>
+    <span class="text-toolbar-divider" aria-hidden="true"></span>
+    <button type="button" class="icon-btn wm-toolbar-duplicate" aria-label="Duplicar marca-d'água" title="Duplicar (Ctrl+D)">${icons.duplicate}</button>
+    <button type="button" class="icon-btn danger wm-toolbar-delete" aria-label="Excluir marca-d'água" title="Excluir marca-d'água">${icons.trash}</button>
+  `;
+
+  const size = toolbar.querySelector('[aria-label="Tamanho da fonte"]');
+  size.value = overlay.fontSize;
+  size.addEventListener('change', () => {
+    const fontSize = Number(size.value);
+    if (!Number.isFinite(fontSize) || fontSize < 10 || fontSize > 200) {
+      size.value = overlay.fontSize;
+      return;
+    }
+    updateOverlay(editorState.activePageIndex, overlay.id, { fontSize });
+  });
+
+  const color = toolbar.querySelector('input[type="color"]');
+  color.value = colorToHex(overlay.color);
+  color.addEventListener('change', () => {
+    updateOverlay(editorState.activePageIndex, overlay.id, { color: hexToColor(color.value) });
+  });
+
+  const opacityInput = toolbar.querySelector('[aria-label="Opacidade"]');
+  opacityInput.value = Math.round((overlay.opacity ?? 1) * 100);
+  opacityInput.addEventListener('change', () => {
+    const pct = Number(opacityInput.value);
+    if (!Number.isFinite(pct) || pct < 5 || pct > 100) {
+      opacityInput.value = Math.round((overlay.opacity ?? 1) * 100);
+      return;
+    }
+    updateOverlay(editorState.activePageIndex, overlay.id, { opacity: pct / 100 });
+  });
+
+  toolbar.querySelector('.wm-toolbar-duplicate').addEventListener('click', () => {
+    duplicateSelected(editorState.activePageIndex, overlay.id);
+  });
+  toolbar.querySelector('.wm-toolbar-delete').addEventListener('click', () => {
     selectedId = null;
     removeOverlay(editorState.activePageIndex, overlay.id);
   });
